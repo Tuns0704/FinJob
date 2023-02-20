@@ -12,7 +12,7 @@ namespace finjob_backend.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<CompanyDTO>> GetCompanyList()
         {
-            return Ok(CompanyStore.companyList);
+            return Ok(CompanyStore.CompanyList);
         }
         [HttpGet("{id:int}", Name ="GetCompany")]
         public ActionResult<CompanyDTO> GetCompany(int id)
@@ -21,7 +21,7 @@ namespace finjob_backend.Controllers
             {
                 return BadRequest();
             }
-            var company = CompanyStore.companyList.FirstOrDefault(x => x.Id == id);
+            var company = CompanyStore.CompanyList.FirstOrDefault(x => x.Id == id);
             if (company == null)
             {
                 return NotFound();
@@ -38,7 +38,7 @@ namespace finjob_backend.Controllers
             {
                 return BadRequest(ModelState);
             }*/
-            if(CompanyStore.companyList.FirstOrDefault(u => u.Name.ToLower()== companyDTO.Name.ToLower()) != null) 
+            if(CompanyStore.CompanyList.FirstOrDefault(u => u.Name.ToLower()== companyDTO.Name.ToLower()) != null) 
             {
 
                 ModelState.AddModelError("CustomError","Company Already exist!");
@@ -52,8 +52,8 @@ namespace finjob_backend.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            companyDTO.Id = CompanyStore.companyList.OrderByDescending(u => u.Id).FirstOrDefault().Id + 1;
-            CompanyStore.companyList.Add(companyDTO);
+            companyDTO.Id = CompanyStore.CompanyList.OrderByDescending(u => u.Id).FirstOrDefault().Id + 1;
+            CompanyStore.CompanyList.Add(companyDTO);
             return CreatedAtRoute("GetCompany", new {id = companyDTO.Id}, companyDTO);
         }
         [HttpDelete("{id:int}", Name = "DeleteCompany")]
@@ -66,12 +66,12 @@ namespace finjob_backend.Controllers
             {
                 return BadRequest();
             }
-            var company = CompanyStore.companyList.FirstOrDefault(u => u.Id == id);
+            var company = CompanyStore.CompanyList.FirstOrDefault(u => u.Id == id);
             if(company == null)
             {
                 return NotFound();
             }
-            CompanyStore.companyList.Remove(company);
+            CompanyStore.CompanyList.Remove(company);
             return NoContent();
         }
         [HttpPut("id:int", Name = "UpdateCompany")]
@@ -83,7 +83,7 @@ namespace finjob_backend.Controllers
             {
                 return BadRequest();
             }
-            var company = CompanyStore.companyList.FirstOrDefault(u => u.Id == id);
+            var company = CompanyStore.CompanyList.FirstOrDefault(u => u.Id == id);
             company.Name = companyDTO.Name;
             company.Description = companyDTO.Description;
             company.Scale = companyDTO.Scale;
