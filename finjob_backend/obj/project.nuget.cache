@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "R7PIfzhl1ZfdMSQp63G0H29/AOlBszbq489O/DriycYL2YCV3QLWUur4ELtbc3d63rnFA+R8TmIduWRsvXaAPA==",
+  "dgSpecHash": "WZQulmxES1nVCAI2Tb1UWCZ7okmZYJmEkKRVg0fj65RB9WVs4uvZyy3JpxAwoXP2STDEJu7tu3Fhb7dfqnT5ew==",
   "success": true,
   "projectFilePath": "D:\\Important\\Greenwich\\Top Up - UoG\\Final Year Project\\FinJob\\finjob_backend\\finjob_backend.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\USER\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
+    "C:\\Users\\USER\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.0\\automapper.extensions.microsoft.dependencyinjection.12.0.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

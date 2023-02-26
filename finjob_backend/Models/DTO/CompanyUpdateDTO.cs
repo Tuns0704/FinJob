@@ -2,17 +2,20 @@
 
 namespace finjob_backend.Models.DTO
 {
-    public class CompanyDTO
+    public class CompanyUpdateDTO
     {
+        [Required]
         public int Id { get; set; }
         [Required]
         [MaxLength(30)]
         public string Name { get; set; }
+        [Required]
         public string Description { get; set; }
         [Required]
         public string Scale { get; set; }
+        [Required]
         public string Location { get; set; }
-        public string ImageURL { get; set; }
 
+        public string ImageURL { get; set; }
     }
 }

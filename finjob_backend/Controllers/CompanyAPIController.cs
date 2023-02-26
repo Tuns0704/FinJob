@@ -1,166 +1,133 @@
-﻿using Azure;
+﻿using AutoMapper;
+using Azure;
 using finjob_backend.Data;
 using finjob_backend.Models;
 using finjob_backend.Models.DTO;
+using finjob_backend.Repository.IRepository;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace finjob_backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/CompanyAPI")]
     [ApiController]
     public class CompanyAPIController : ControllerBase
     {
-        private readonly ApplicationDbContext _db;
-        public CompanyAPIController(ApplicationDbContext db)
+        private readonly ICompanyRepository _dbCompany;
+        private readonly IMapper _mapper;
+        public CompanyAPIController(ICompanyRepository dbCompany, IMapper mapper)
         {
-            _db = db;
+            _dbCompany = dbCompany;
+            _mapper = mapper;
         }
 
-        [HttpGet(Name = "GetCompanies")]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<CompanyDTO>> GetCompanyList()
+        public async Task<ActionResult<IEnumerable<CompanyDTO>>> GetCompanyList()
         {
-            return Ok(_db.Companies.ToList());
+            IEnumerable<Company> companyList = await _dbCompany.GetAllAsync();
+            return Ok(_mapper.Map<List<CompanyDTO>>(companyList));
         }
 
         [HttpGet("{id:int}", Name ="GetCompany")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<CompanyDTO> GetCompany(int id)
+        public async Task<ActionResult<CompanyDTO>> GetCompany(int id)
         {
             if(id == 0)
             {
                 return BadRequest();
             }
-            var company = _db.Companies.FirstOrDefault(x => x.Id == id);
+            var company = await _dbCompany.GetAsync(x => x.Id == id);
             if (company == null)
             {
                 return NotFound();
             }
-            return Ok(company);
+            return Ok(_mapper.Map<CompanyDTO>(company));
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<CompanyDTO> CreateCompany([FromBody] CompanyDTO companyDTO)
+        public async Task<ActionResult<CompanyDTO>> CreateCompany([FromBody] CompanyCreateDTO createDTO)
         {
-            /*if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }*/
-            if(_db.Companies.FirstOrDefault(u => u.Name.ToLower()== companyDTO.Name.ToLower()) != null) 
+            if(await _dbCompany.GetAsync(u => u.Name.ToLower()== createDTO.Name.ToLower()) != null) 
             {
 
                 ModelState.AddModelError("CustomError","Company Already exist!");
                 return BadRequest(ModelState);
             }
-            if (companyDTO == null)
+            if (createDTO == null)
             {
-                return BadRequest(companyDTO);
+                return BadRequest(createDTO);
             }
-            if(companyDTO.Id > 0)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-            Company model = new()
-            {
-                Id = companyDTO.Id,
-                Name = companyDTO.Name,
-                Description = companyDTO.Description,
-                Scale= companyDTO.Scale,
-                Location = companyDTO.Location,
-                ImageURL = companyDTO.ImageURL,
-            };
-            _db.Companies.Add(model);
-            _db.SaveChanges();
 
-            return CreatedAtRoute("GetCompany", new {id = companyDTO.Id}, companyDTO);
+            Company model = _mapper.Map<Company>(createDTO);
+
+            await _dbCompany.CreateAsync(model);
+            return CreatedAtRoute("GetCompany", new { id = model.Id }, model); ;
         }
 
         [HttpDelete("{id:int}", Name = "DeleteCompany")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult DeleteCompany(int id)
+        public async Task<IActionResult> DeleteCompany(int id)
         {
             if(id == 0)
             {
                 return BadRequest();
             }
-            var company = _db.Companies.FirstOrDefault(u => u.Id == id);
+            var company = await _dbCompany.GetAsync(u => u.Id == id);
             if(company == null)
             {
                 return NotFound();
             }
-            _db.Companies.Remove(company);
+            await _dbCompany.RemoveAsync(company);
             return NoContent();
         }
 
-        [HttpPut("id:int", Name = "UpdateCompany")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPut("{id:int}", Name = "UpdateCompany")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult UpdateCompany(int id, [FromBody] CompanyDTO companyDTO) 
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateCompany(int id, [FromBody] CompanyUpdateDTO updateDTO)
         {
-            if(companyDTO == null || id != companyDTO.Id)
+            if (updateDTO == null || id != updateDTO.Id)
             {
                 return BadRequest();
             }
-            Company model = new()
-            {
-                Id = companyDTO.Id,
-                Name = companyDTO.Name,
-                Description = companyDTO.Description,
-                Scale = companyDTO.Scale,
-                Location = companyDTO.Location,
-                ImageURL = companyDTO.ImageURL,
-            };
-            _db.Companies.Update(model);
-            _db.SaveChanges();
+
+            Company model = _mapper.Map<Company>(updateDTO);
+
+            await _dbCompany.UpdateAsync(model);
             return NoContent();
         }
 
-        [HttpPatch("id:int", Name = "UpdateCompany")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPatch("{id:int}", Name = "UpdatePartialCompany")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult UpdatePartialCompany(int id, JsonPatchDocument<CompanyDTO>  patchDTO)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdatePartialCompany(int id, JsonPatchDocument<CompanyUpdateDTO> patchDTO)
         {
             if (patchDTO == null || id == 0)
             {
                 return BadRequest();
             }
-            var company = _db.Companies.FirstOrDefault(u => u.Id == id);
+            var company = await _dbCompany.GetAsync(u => u.Id == id, tracked: false);
 
-            CompanyDTO companyDTO = new()
-            {
-                Id = company.Id,
-                Name = company.Name,
-                Description = company.Description,
-                Scale = company.Scale,
-                Location = company.Location,
-                ImageURL = company.ImageURL,
-            };
+            CompanyUpdateDTO companyDTO = _mapper.Map<CompanyUpdateDTO>(company);
 
-            if(company == null) 
+            if (company == null)
             {
                 return BadRequest();
             }
             patchDTO.ApplyTo(companyDTO, ModelState);
-            Company model = new()
-            {
-                Id = companyDTO.Id,
-                Name = companyDTO.Name,
-                Description = companyDTO.Description,
-                Scale = companyDTO.Scale,
-                Location = companyDTO.Location,
-                ImageURL = companyDTO.ImageURL,
-            };
 
-            _db.Companies.Update(model);
-            _db.SaveChanges();
+            Company model = _mapper.Map<Company>(companyDTO);
+
+            await _dbCompany.UpdateAsync(model);
 
             if (!ModelState.IsValid)
             {

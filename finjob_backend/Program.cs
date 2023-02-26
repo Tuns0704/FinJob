@@ -1,4 +1,7 @@
+using finjob_backend;
 using finjob_backend.Data;
+using finjob_backend.Repository;
+using finjob_backend.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(option => {
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
 });
+builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddControllers(option => {
     //option.ReturnHttpNotAcceptable=true;
 }).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
