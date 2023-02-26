@@ -12,7 +12,7 @@ using finjob_backend.Data;
 namespace finjob_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230220092138_CreateCompanyTable")]
+    [Migration("20230220094022_CreateCompanyTable")]
     partial class CreateCompanyTable
     {
         /// <inheritdoc />
@@ -62,7 +62,7 @@ namespace finjob_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Companys");
+                    b.ToTable("Companies");
                 });
 #pragma warning restore 612, 618
         }

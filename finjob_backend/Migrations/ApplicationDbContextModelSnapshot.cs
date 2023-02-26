@@ -59,13 +59,13 @@ namespace finjob_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Companys");
+                    b.ToTable("Companies");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2023, 2, 20, 16, 22, 12, 328, DateTimeKind.Local).AddTicks(7186),
+                            CreatedDate = new DateTime(2023, 2, 20, 16, 40, 48, 341, DateTimeKind.Local).AddTicks(7324),
                             Description = "None",
                             ImageURL = "https://itviec.com/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBK1lxREE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--d01c8dc918133b1b89705dc00ef4f490b78d20e3/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJY0c1bkJqb0dSVlE2RkhKbGMybDZaVjkwYjE5c2FXMXBkRnNIYVFJc0FXa0NMQUU9IiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--492f60b9aac6e8159e50e72bb289c5feb47a79d4/mgm-technology-partners-vietnam-logo.png",
                             Location = "Da Nang",
@@ -76,7 +76,7 @@ namespace finjob_backend.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2023, 2, 20, 16, 22, 12, 328, DateTimeKind.Local).AddTicks(7199),
+                            CreatedDate = new DateTime(2023, 2, 20, 16, 40, 48, 341, DateTimeKind.Local).AddTicks(7334),
                             Description = "None",
                             ImageURL = "https://dsa.org.vn/wp-content/uploads/2018/01/Agility.jpg",
                             Location = "Da Nang",
@@ -87,7 +87,7 @@ namespace finjob_backend.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedDate = new DateTime(2023, 2, 20, 16, 22, 12, 328, DateTimeKind.Local).AddTicks(7201),
+                            CreatedDate = new DateTime(2023, 2, 20, 16, 40, 48, 341, DateTimeKind.Local).AddTicks(7335),
                             Description = "None",
                             ImageURL = "https://images.glints.com/unsafe/glints-dashboard.s3.amazonaws.com/company-logo/2c47b1dbc75d6d9184be768c39fb9ac7.png",
                             Location = "Da Nang",
@@ -98,7 +98,7 @@ namespace finjob_backend.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedDate = new DateTime(2023, 2, 20, 16, 22, 12, 328, DateTimeKind.Local).AddTicks(7204),
+                            CreatedDate = new DateTime(2023, 2, 20, 16, 40, 48, 341, DateTimeKind.Local).AddTicks(7335),
                             Description = "None",
                             ImageURL = "https://doanhnghiep.quocgiakhoinghiep.vn/wp-content/uploads/2020/08/images-7.png",
                             Location = "Da Nang",
@@ -109,7 +109,7 @@ namespace finjob_backend.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedDate = new DateTime(2023, 2, 20, 16, 22, 12, 328, DateTimeKind.Local).AddTicks(7205),
+                            CreatedDate = new DateTime(2023, 2, 20, 16, 40, 48, 341, DateTimeKind.Local).AddTicks(7338),
                             Description = "None",
                             ImageURL = "https://static.topcv.vn/company_logos/bUsiw4xpTeqvyGecqSrVW3Zuq0dayRwK_1656588043____83f8efe4285d433505271ef261179f41.jpeg",
                             Location = "Da Nang",
