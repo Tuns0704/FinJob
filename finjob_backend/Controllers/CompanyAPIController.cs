@@ -1,19 +1,17 @@
 ﻿using AutoMapper;
-using Azure;
-using finjob_backend.Data;
 using finjob_backend.Models;
 using finjob_backend.Models.DTO;
 using finjob_backend.Repository.IRepository;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Net;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace finjob_backend.Controllers
 {
     [Route("api/CompanyAPI")]
     [ApiController]
+    [EnableCors("AllowOrigin")]
     public class CompanyAPIController : ControllerBase
     {
         protected APIResponse _response;
@@ -42,10 +40,10 @@ namespace finjob_backend.Controllers
                 _response.IsSuccess = false;
                 _response.ErrorMessages = new List<string>() { ex.ToString() };
             }
-            return _response;       
+            return _response;
         }
 
-        [HttpGet("{id:int}", Name ="GetCompany")]
+        [HttpGet("{id:int}", Name = "GetCompany")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -130,7 +128,7 @@ namespace finjob_backend.Controllers
                 _response.StatusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
                 return Ok(_response);
-            }     
+            }
             catch (Exception ex)
             {
                 _response.IsSuccess = false;

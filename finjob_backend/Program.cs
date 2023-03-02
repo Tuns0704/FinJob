@@ -10,8 +10,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(option => {
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
 });
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowOrigin",
+    builder => builder
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .WithOrigins("https://localhost:3000")
+        .AllowCredentials());
+});
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+builder.Services.AddScoped<IJobRepository, JobRepository>();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
+
 builder.Services.AddControllers(option => {
     //option.ReturnHttpNotAcceptable=true;
 }).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
@@ -24,8 +35,12 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseCors("AllowOrigin");
     app.UseSwagger();
     app.UseSwaggerUI();
+} else
+{
+    app.UseCors("AllowOrigin");
 }
 
 app.UseHttpsRedirection();

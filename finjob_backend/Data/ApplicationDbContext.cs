@@ -9,7 +9,8 @@ namespace finjob_backend.Data
         {
         }
         public DbSet<Company> Companies { get; set; }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public DbSet<Job> Jobs { get; set; }
+        /*protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Company>().HasData(
               new Company
@@ -62,6 +63,6 @@ namespace finjob_backend.Data
                   ImageURL = "https://static.topcv.vn/company_logos/bUsiw4xpTeqvyGecqSrVW3Zuq0dayRwK_1656588043____83f8efe4285d433505271ef261179f41.jpeg",
                   CreatedDate = DateTime.Now
               });
-        }
+        }*/
     }
 }
