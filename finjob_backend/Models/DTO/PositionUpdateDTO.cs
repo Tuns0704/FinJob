@@ -1,14 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace finjob_backend.Models
+namespace finjob_backend.Models.DTO
 {
-    public class Position
+    public class PositionUpdateDTO
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
+        [MaxLength(30)]
         public string Name { get; set; }
         public string Description { get; set; }
     }

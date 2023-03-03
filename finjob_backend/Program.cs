@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<ApplicationDbContext>(option => {
+builder.Services.AddDbContext<ApplicationDbContext>(option =>
+{
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
 });
 builder.Services.AddCors(options =>
@@ -21,9 +22,11 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<IJobRepository, JobRepository>();
+builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 
-builder.Services.AddControllers(option => {
+builder.Services.AddControllers(option =>
+{
     //option.ReturnHttpNotAcceptable=true;
 }).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
 
@@ -38,7 +41,8 @@ if (app.Environment.IsDevelopment())
     app.UseCors("AllowOrigin");
     app.UseSwagger();
     app.UseSwaggerUI();
-} else
+}
+else
 {
     app.UseCors("AllowOrigin");
 }

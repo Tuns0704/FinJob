@@ -5,11 +5,13 @@ namespace finjob_backend.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
         public DbSet<Company> Companies { get; set; }
         public DbSet<Job> Jobs { get; set; }
+        public DbSet<Location> Locations { get; set; }
+        public DbSet<Position> Positions { get; set; }
         /*protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Company>().HasData(

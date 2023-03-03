@@ -15,6 +15,14 @@ namespace finjob_backend
             CreateMap<Job, JobDTO>().ReverseMap();
             CreateMap<Job, JobCreateDTO>().ReverseMap();
             CreateMap<Job, JobUpdateDTO>().ReverseMap();
+
+            CreateMap<Location, LocationDTO>().ReverseMap();
+            CreateMap<Location, LocationCreateDTO>().ReverseMap();
+            CreateMap<Location, LocationUpdateDTO>().ReverseMap();
+
+            CreateMap<Position, PositionDTO>().ReverseMap();
+            CreateMap<Position, PositionCreateDTO>().ReverseMap();
+            CreateMap<Position, PositionUpdateDTO>().ReverseMap();
         }
     }
 }

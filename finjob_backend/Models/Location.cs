@@ -1,7 +1,14 @@
-﻿namespace finjob_backend.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace finjob_backend.Models
 {
     public class Location
     {
-        public Location() { }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }
+

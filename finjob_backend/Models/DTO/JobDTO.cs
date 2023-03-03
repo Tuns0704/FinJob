@@ -17,5 +17,7 @@ namespace finjob_backend.Models.DTO
         public string Benefits { get; set; }
         [Required]
         public string Salary { get; set; }
+        [Required]
+        public int CompanyID { get; set; }
     }
 }
