@@ -1,35 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React from "react";
+import { Navbar } from "./components";
+import styles from "./styles";
 
 function App() {
-  const [companies, setCompanies] = useState([]);
-
-  useEffect(() => {
-      fetch('https://localhost:7294/api/companyapi', {
-          method: "GET",
-          headers: {
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Credentials': true
-          },
-
-          credentials: "include"
-          }) 
-      .then(response => response.json())
-      .then(data => setCompanies(data))
-      .catch(error => console.log(error));
-  }, []);
-
-  return (
-    <div>
-      <h1>List of Companies</h1>
-      <ul>
-        {companies.map(company => (
-          <li key={company.id}>
-            {company.statusCode} ({company.description})
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+	return (
+		<div className="App">
+			<div className="bg-primary w-full overflow-hidden">
+				<div className={`${styles.paddingX} ${styles.flexCenter}`}>
+					<div className={`${styles.boxWidth}`}>
+						<Navbar />
+					</div>
+				</div>
+				<div className={`bg-primary ${styles.flexStart}`}>
+					<div className={`${styles.boxWidth}`}></div>
+				</div>
+				<div className={`bg-primary ${styles.paddingX}${styles.flexStart}`}>
+					<div className={`${styles.boxWidth}`}></div>
+				</div>
+			</div>
+		</div>
+	);
 }
 
 export default App;
