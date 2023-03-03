@@ -7,6 +7,8 @@ using System.Net;
 
 namespace finjob_backend.Controllers
 {
+    [Route("api/PositionAPI")]
+    [ApiController]
     public class PositionAPIController : Controller
     {
         protected APIResponse _response;
