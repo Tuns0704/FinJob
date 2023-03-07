@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar } from "./components";
+import { Navbar, CompanyForm, CompanyCard, JobForm, JobCard } from "./components";
 import styles from "./styles";
 
 function App() {
@@ -12,10 +12,16 @@ function App() {
 					</div>
 				</div>
 				<div className={`bg-primary ${styles.flexStart}`}>
-					<div className={`${styles.boxWidth}`}></div>
+					<div className={`${styles.boxWidth}` }>
+						<CompanyCard/>			
+						<JobCard/>			
+					</div>
 				</div>
 				<div className={`bg-primary ${styles.paddingX}${styles.flexStart}`}>
-					<div className={`${styles.boxWidth}`}></div>
+					<div className={`${styles.boxWidth}`}>
+						<CompanyForm />
+						<JobForm />
+					</div>
 				</div>
 			</div>
 		</div>
