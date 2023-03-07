@@ -2,6 +2,7 @@
 using finjob_backend.Models;
 using finjob_backend.Models.DTO;
 using finjob_backend.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -23,6 +24,7 @@ namespace finjob_backend.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetLocationList()
         {

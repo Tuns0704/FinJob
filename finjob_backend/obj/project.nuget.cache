@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "v1tUX9ulJ77aV05zmhcXE1x3apdV5d1YpP+iQbZyEm7IdCJlVS/TzvKLb+LHRl+ktTknE9TkAPjXaHwO00X+kw==",
+  "dgSpecHash": "K07zBVPN2wKRmHqtOM0sySw/tgQUNOYnUxi5hCpuqBd4FiXcDD1nisumOCOtPwQmnX/L0yX6mRsjWE0hTmQyDw==",
   "success": true,
   "projectFilePath": "D:\\Important\\Greenwich\\Top Up - UoG\\Final Year Project\\FinJob\\finjob_backend\\finjob_backend.csproj",
   "expectedPackageFiles": [
@@ -9,6 +9,7 @@
     "C:\\Users\\USER\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
+    "C:\\Users\\USER\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.14\\microsoft.aspnetcore.authentication.jwtbearer.6.0.14.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\microsoft.aspnetcore.cors\\2.2.0\\microsoft.aspnetcore.cors.2.2.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\microsoft.aspnetcore.http.abstractions\\2.2.0\\microsoft.aspnetcore.http.abstractions.2.2.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\microsoft.aspnetcore.http.extensions\\2.2.0\\microsoft.aspnetcore.http.extensions.2.2.0.nupkg.sha512",
