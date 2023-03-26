@@ -23,6 +23,8 @@ namespace finjob_backend
             CreateMap<Position, PositionDTO>().ReverseMap();
             CreateMap<Position, PositionCreateDTO>().ReverseMap();
             CreateMap<Position, PositionUpdateDTO>().ReverseMap();
+
+            CreateMap<ApplicationUser, UserDTO>().ReverseMap();
         }
     }
 }

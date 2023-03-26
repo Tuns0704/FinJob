@@ -1,8 +1,10 @@
 using finjob_backend;
 using finjob_backend.Data;
+using finjob_backend.Models;
 using finjob_backend.Repository;
 using finjob_backend.Repository.IRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -24,6 +26,8 @@ builder.Services.AddCors(options =>
         .WithOrigins("https://localhost:3000")
         .AllowCredentials());
 });
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<IJobRepository, JobRepository>();
