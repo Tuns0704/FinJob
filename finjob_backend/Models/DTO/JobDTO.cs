@@ -8,11 +8,11 @@ namespace finjob_backend.Models.DTO
         public string Description { get; set; }
         [Required]
         [MaxLength(30)]
-        public string Position { get; set; }
+        public List<int> PositionIds { get; set; }
         [Required]
         public string Requirement { get; set; }
         [Required]
-        public string Location { get; set; }
+        public List<int> LocationIds { get; set; }
         [Required]
         public string Benefits { get; set; }
         [Required]

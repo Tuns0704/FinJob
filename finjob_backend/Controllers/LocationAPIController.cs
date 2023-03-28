@@ -56,6 +56,8 @@ namespace finjob_backend.Controllers
                     return BadRequest();
                 }
                 var location = await _dbLocation.GetAsync(x => x.Id == id);
+
+
                 if (location == null)
                 {
                     return NotFound();

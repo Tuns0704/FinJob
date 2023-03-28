@@ -3,6 +3,7 @@ using finjob_backend.Models;
 using finjob_backend.Models.DTO;
 using finjob_backend.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 using System.Net;
 
 namespace finjob_backend.Controllers
@@ -14,13 +15,17 @@ namespace finjob_backend.Controllers
         protected APIResponse _response;
         private readonly IJobRepository _dbJob;
         private readonly ICompanyRepository _dbCompany;
+        private readonly IPositionRepository _dbPosition;
+        private readonly ILocationRepository _dbLocation;
         private readonly IMapper _mapper;
 
-        public JobAPIController(IJobRepository dbJob, IMapper mapper, ICompanyRepository dbCompany)
+        public JobAPIController(IJobRepository dbJob, IMapper mapper, ICompanyRepository dbCompany, IPositionRepository dbPosition, ILocationRepository dbLocation)
         {
             this._response = new();
             _dbJob = dbJob;
             _dbCompany = dbCompany;
+            _dbPosition = dbPosition;
+            _dbLocation = dbLocation;
             _mapper = mapper;
         }
 
@@ -30,7 +35,11 @@ namespace finjob_backend.Controllers
         {
             try
             {
-                IEnumerable<Job> jobList = await _dbJob.GetAllAsync();
+                IEnumerable<Job> jobList = await _dbJob.GetAllAsync(filter: null, includes: new Expression<Func<Job, object>>[]
+                                  {
+                                      x => x.Positions,
+                                      x => x.Locations,
+                                  });
                 _response.Result = _mapper.Map<List<JobDTO>>(jobList);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
@@ -55,7 +64,7 @@ namespace finjob_backend.Controllers
                 {
                     return BadRequest();
                 }
-                var job = await _dbJob.GetAsync(x => x.Id == id);
+                var job = await _dbJob.GetAsync(filter: x => x.Id == id, includes: x => x.Positions);
                 if (job == null)
                 {
                     return NotFound();
@@ -88,8 +97,13 @@ namespace finjob_backend.Controllers
                     ModelState.AddModelError("CustomError", "Company ID is Invalid!");
                     return BadRequest();
                 }
+                var locations = await _dbLocation.GetAllAsync(x => createDTO.LocationIds.Contains(x.Id));
+                var positions = await _dbPosition.GetAllAsync(x => createDTO.PositionIds.Contains(x.Id));
 
                 Job job = _mapper.Map<Job>(createDTO);
+
+                job.Locations = locations;
+                job.Positions = positions;
 
                 await _dbJob.CreateAsync(job);
 

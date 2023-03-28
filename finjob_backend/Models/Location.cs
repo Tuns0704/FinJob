@@ -9,6 +9,8 @@ namespace finjob_backend.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Name { get; set; }
+        public ICollection<Company> Companies { get; set; }
+        public ICollection<Job> Jobs { get; set; }
     }
 }
 

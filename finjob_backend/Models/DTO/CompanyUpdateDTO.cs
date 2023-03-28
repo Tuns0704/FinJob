@@ -14,7 +14,7 @@ namespace finjob_backend.Models.DTO
         [Required]
         public string Scale { get; set; }
         [Required]
-        public string Location { get; set; }
+        public List<int> LocationIds { get; set; }
 
         public string ImageURL { get; set; }
     }

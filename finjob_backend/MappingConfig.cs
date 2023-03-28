@@ -8,13 +8,28 @@ namespace finjob_backend
     {
         public MappingConfig()
         {
-            CreateMap<Company, CompanyDTO>().ReverseMap();
-            CreateMap<Company, CompanyCreateDTO>().ReverseMap();
-            CreateMap<Company, CompanyUpdateDTO>().ReverseMap();
+            CreateMap<Company, CompanyDTO>()
+                .ForMember(x => x.LocationIds, opt => opt.MapFrom(s => s.Locations.Select(l => l.Id).ToList()))
+                .ReverseMap();
+            CreateMap<Company, CompanyCreateDTO>()
+                .ForMember(x => x.LocationIds, opt => opt.MapFrom(s => s.Locations.Select(l => l.Id).ToList()))
+                .ReverseMap();
+            CreateMap<Company, CompanyUpdateDTO>()
+                .ForMember(x => x.LocationIds, opt => opt.MapFrom(s => s.Locations.Select(l => l.Id).ToList()))
+                .ReverseMap();
 
-            CreateMap<Job, JobDTO>().ReverseMap();
-            CreateMap<Job, JobCreateDTO>().ReverseMap();
-            CreateMap<Job, JobUpdateDTO>().ReverseMap();
+            CreateMap<Job, JobDTO>()
+                .ForMember(x => x.LocationIds, opt => opt.MapFrom(s => s.Locations.Select(l => l.Id).ToList()))
+                .ForMember(x => x.PositionIds, opt => opt.MapFrom(s => s.Positions.Select(l => l.Id).ToList()))
+                .ReverseMap();
+            CreateMap<Job, JobCreateDTO>()
+                .ForMember(x => x.LocationIds, opt => opt.MapFrom(s => s.Locations.Select(l => l.Id).ToList()))
+                .ForMember(x => x.PositionIds, opt => opt.MapFrom(s => s.Positions.Select(l => l.Id).ToList()))
+                .ReverseMap();
+            CreateMap<Job, JobUpdateDTO>()
+                .ForMember(x => x.LocationIds, opt => opt.MapFrom(s => s.Locations.Select(l => l.Id).ToList()))
+                .ForMember(x => x.PositionIds, opt => opt.MapFrom(s => s.Positions.Select(l => l.Id).ToList()))
+                .ReverseMap();
 
             CreateMap<Location, LocationDTO>().ReverseMap();
             CreateMap<Location, LocationCreateDTO>().ReverseMap();

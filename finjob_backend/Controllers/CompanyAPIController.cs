@@ -2,7 +2,6 @@
 using finjob_backend.Models;
 using finjob_backend.Models.DTO;
 using finjob_backend.Repository.IRepository;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -14,10 +13,12 @@ namespace finjob_backend.Controllers
     {
         protected APIResponse _response;
         private readonly ICompanyRepository _dbCompany;
+        private readonly ILocationRepository _dbLocation;
         private readonly IMapper _mapper;
-        public CompanyAPIController(ICompanyRepository dbCompany, IMapper mapper)
+        public CompanyAPIController(ICompanyRepository dbCompany, ILocationRepository dbLocation, IMapper mapper)
         {
             _dbCompany = dbCompany;
+            _dbLocation = dbLocation;
             _mapper = mapper;
             this._response = new();
         }
@@ -30,7 +31,7 @@ namespace finjob_backend.Controllers
         {
             try
             {
-                IEnumerable<Company> companyList = await _dbCompany.GetAllAsync();
+                IEnumerable<Company> companyList = await _dbCompany.GetAllAsync(filter: null, includes: x => x.Locations);
                 _response.Result = _mapper.Map<List<CompanyDTO>>(companyList);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
@@ -57,7 +58,7 @@ namespace finjob_backend.Controllers
                 {
                     return BadRequest();
                 }
-                var company = await _dbCompany.GetAsync(x => x.Id == id);
+                var company = await _dbCompany.GetAsync(x => x.Id == id, includes: x => x.Locations);
                 if (company == null)
                 {
                     return NotFound();
@@ -95,7 +96,9 @@ namespace finjob_backend.Controllers
                     return BadRequest(createDTO);
                 }
 
+                var locations = await _dbLocation.GetAllAsync(x => createDTO.LocationIds.Contains(x.Id));
                 Company company = _mapper.Map<Company>(createDTO);
+                company.Locations = locations;
 
                 await _dbCompany.CreateAsync(company);
 
@@ -156,8 +159,9 @@ namespace finjob_backend.Controllers
                 {
                     return BadRequest();
                 }
-
+                var location = await _dbLocation.GetAllAsync(x => updateDTO.LocationIds.Contains(x.Id));
                 Company model = _mapper.Map<Company>(updateDTO);
+                model.Locations = location;
 
                 await _dbCompany.UpdateAsync(model);
                 _response.StatusCode = HttpStatusCode.NoContent;
@@ -172,36 +176,36 @@ namespace finjob_backend.Controllers
             return _response;
         }
 
-        [HttpPatch("{id:int}", Name = "UpdatePartialCompany")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> UpdatePartialCompany(int id, JsonPatchDocument<CompanyUpdateDTO> patchDTO)
-        {
-            if (patchDTO == null || id == 0)
-            {
-                return BadRequest();
-            }
-            var company = await _dbCompany.GetAsync(u => u.Id == id, tracked: false);
+        /*        [HttpPatch("{id:int}", Name = "UpdatePartialCompany")]
+                [ProducesResponseType(StatusCodes.Status204NoContent)]
+                [ProducesResponseType(StatusCodes.Status400BadRequest)]
+                [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+                [ProducesResponseType(StatusCodes.Status403Forbidden)]
+                public async Task<IActionResult> UpdatePartialCompany(int id, JsonPatchDocument<CompanyUpdateDTO> patchDTO)
+                {
+                    if (patchDTO == null || id == 0)
+                    {
+                        return BadRequest();
+                    }
+                    var company = await _dbCompany.GetAsync(u => u.Id == id, tracked: false);
 
-            CompanyUpdateDTO companyDTO = _mapper.Map<CompanyUpdateDTO>(company);
+                    CompanyUpdateDTO companyDTO = _mapper.Map<CompanyUpdateDTO>(company);
 
-            if (company == null)
-            {
-                return BadRequest();
-            }
-            patchDTO.ApplyTo(companyDTO, ModelState);
+                    if (company == null)
+                    {
+                        return BadRequest();
+                    }
+                    patchDTO.ApplyTo(companyDTO, ModelState);
 
-            Company model = _mapper.Map<Company>(companyDTO);
+                    Company model = _mapper.Map<Company>(companyDTO);
 
-            await _dbCompany.UpdateAsync(model);
+                    await _dbCompany.UpdateAsync(model);
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            return NoContent();
-        }
+                    if (!ModelState.IsValid)
+                    {
+                        return BadRequest(ModelState);
+                    }
+                    return NoContent();
+                }*/
     }
 }

@@ -15,9 +15,22 @@ namespace finjob_backend.Data
         public DbSet<Job> Jobs { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<Position> Positions { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Company>()
+                .HasMany<Location>(c => c.Locations)
+                .WithMany(l => l.Companies);
+
+
+
+            modelBuilder.Entity<Location>()
+                .HasMany<Company>(l => l.Companies)
+                .WithMany(c => c.Locations);
+
+
             /*            modelBuilder.Entity<Company>().HasData(
                           new Company
                           {
