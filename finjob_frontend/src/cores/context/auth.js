@@ -3,7 +3,7 @@ import { createContext, useEffect, useReducer } from "react";
 export const authContext = createContext({
 	state: {
 		user: {},
-		profile: {},
+		role: "",
 		token: "",
 		isAuthenticated: false,
 	},
@@ -12,21 +12,16 @@ export const authContext = createContext({
 
 const initialState = {
 	user: {},
-	profile: {},
+	role: "",
 	token: "",
 	isAuthenticated: false,
 };
 
 const LOGIN = "LOGIN";
 const LOGOUT = "LOGOUT";
-const UPDATE = "UPDATE";
 
 export const loginAction = (payload) => {
 	return { type: LOGIN, payload };
-};
-
-export const updateAction = (payload) => {
-	return { type: UPDATE, payload };
 };
 
 export const logoutAction = () => {
@@ -36,19 +31,13 @@ export const logoutAction = () => {
 const authReducer = (state, action) => {
 	switch (action.type) {
 		case LOGIN:
-			localStorage.setItem("account_info", JSON.stringify(action.payload));
-			return { ...state, ...action.payload };
-		case UPDATE:
-			localStorage.setItem(
-				"account_info",
-				JSON.stringify({ ...state, user: { ...state.user, ...action.payload } })
-			);
-			return { ...state, user: { ...state.user, ...action.payload } };
+			localStorage.setItem("authInfo", JSON.stringify(action.payload));
+			return { ...state, isAuthenticated: true, ...action.payload };
 		case LOGOUT:
-			localStorage.setItem("account_info", JSON.stringify(initialState));
+			localStorage.removeItem("authInfo");
 			return initialState;
 		default:
-			return initialState;
+			return state;
 	}
 };
 
@@ -56,11 +45,9 @@ const AuthContext = ({ children }) => {
 	const [state, dispatch] = useReducer(authReducer, initialState);
 
 	useEffect(() => {
-		const account_info_from_local_storage =
-			localStorage.getItem("account_info");
-		const account_info = JSON.parse(account_info_from_local_storage);
-		if (account_info) {
-			dispatch(loginAction(account_info));
+		const authInfo = JSON.parse(localStorage.getItem("authInfo"));
+		if (authInfo) {
+			dispatch(loginAction(authInfo));
 		}
 	}, []);
 
