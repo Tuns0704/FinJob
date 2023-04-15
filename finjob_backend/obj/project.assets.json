@@ -4332,9 +4332,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Important\\Greenwich\\Top Up - UoG\\Final Year Project\\FinJob\\finjob_backend\\finjob_backend.csproj",
-      "projectName": "finjob_backend",
-      "projectPath": "D:\\Important\\Greenwich\\Top Up - UoG\\Final Year Project\\FinJob\\finjob_backend\\finjob_backend.csproj",
+      "projectUniqueName": "D:\\Important\\Greenwich\\Top Up - UoG\\Final Year Project\\FinJob\\finjob_backend\\finjob_api.csproj",
+      "projectName": "finjob_api",
+      "projectPath": "D:\\Important\\Greenwich\\Top Up - UoG\\Final Year Project\\FinJob\\finjob_backend\\finjob_api.csproj",
       "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
       "outputPath": "D:\\Important\\Greenwich\\Top Up - UoG\\Final Year Project\\FinJob\\finjob_backend\\obj\\",
       "projectStyle": "PackageReference",

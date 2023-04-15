@@ -2,7 +2,7 @@
 
 namespace finjob_backend.Repository.IRepository
 {
-    public interface IUserRepository
+    public interface IAuthRepository
     {
         bool IsUniqueUser(string username);
         Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO);

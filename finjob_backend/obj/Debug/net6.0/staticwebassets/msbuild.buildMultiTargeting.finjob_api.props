@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\finjob_api.props" />
+</Project>

@@ -11,7 +11,7 @@ using System.Text;
 
 namespace finjob_backend.Repository
 {
-    public class UserRepository : IUserRepository
+    public class AuthRepository : IAuthRepository
     {
         private readonly ApplicationDbContext _db;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -19,7 +19,7 @@ namespace finjob_backend.Repository
         private readonly IMapper _mapper;
         private string secretKey;
 
-        public UserRepository(ApplicationDbContext db, IConfiguration configuration, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
+        public AuthRepository(ApplicationDbContext db, IConfiguration configuration, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
         {
             _db = db;
             _userManager = userManager;
@@ -86,7 +86,7 @@ namespace finjob_backend.Repository
                 UserName = registerationRequestDTO.UserName,
                 Email = registerationRequestDTO.UserName,
                 NormalizedEmail = registerationRequestDTO.UserName.ToUpper(),
-                Name = registerationRequestDTO.Name,
+                Name = registerationRequestDTO.Name
             };
             try
             {
@@ -99,13 +99,13 @@ namespace finjob_backend.Repository
                         await _roleManager.CreateAsync(new IdentityRole("BusinessEmployer"));
                         await _roleManager.CreateAsync(new IdentityRole("Employee"));
                     }
-                    await _userManager.AddToRoleAsync(user, "Admin");
+                    var role = await _roleManager.FindByNameAsync(registerationRequestDTO.Role);
+                    await _userManager.AddToRoleAsync(user, role.Name);
                     var userToReturn = _db.ApplicationUsers.FirstOrDefault(u => u.UserName == registerationRequestDTO.UserName);
                     return _mapper.Map<UserDTO>(userToReturn);
                 }
             }
             catch (Exception e) { }
-
             return new UserDTO();
         }
     }
