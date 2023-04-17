@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "eponh7EfUkzY6jz+bwVAOP1suDli7WAol7sIMJ6kDmC648oyvCxyORRUomEaabnrJCIRGUIz7LvKIn16pobDDA==",
+  "dgSpecHash": "KKcp+D/MAw0ozZSSYJA4c4awdF8X9l8JNbOlFzAFYas8cywM21Q0PY2WgBqacy8EhefJrghYI77V/RJTRa12ng==",
   "success": true,
-  "projectFilePath": "D:\\Important\\Greenwich\\Top Up - UoG\\Final Year Project\\FinJob\\finjob_backend\\finjob_api.csproj",
+  "projectFilePath": "D:\\Important\\Greenwich\\Top Up - UoG\\Final Year Project\\FinJob\\finjob_backend\\finjob_backend.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\USER\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.0\\automapper.extensions.microsoft.dependencyinjection.12.0.0.nupkg.sha512",

@@ -24,11 +24,11 @@ namespace finjob_backend.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<APIResponse>> GetPositionList()
+        public async Task<ActionResult<APIResponse>> GetPositionList(int pageSize = 10, int pageNumber = 1)
         {
             try
             {
-                IEnumerable<Position> positionList = await _dbPosition.GetAllAsync();
+                IEnumerable<Position> positionList = await _dbPosition.GetAllAsync(pageSize: pageSize, pageNumber: pageNumber);
                 _response.Result = _mapper.Map<List<PositionDTO>>(positionList);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
@@ -51,12 +51,12 @@ namespace finjob_backend.Controllers
             {
                 if (id == 0)
                 {
-                    return BadRequest();
+                    return BadRequest(_response.IsSuccess = false);
                 }
                 var position = await _dbPosition.GetAsync(x => x.Id == id);
                 if (position == null)
                 {
-                    return NotFound();
+                    return NotFound(_response.IsSuccess = false);
                 }
                 _response.Result = _mapper.Map<PositionDTO>(position);
                 _response.StatusCode = HttpStatusCode.OK;
@@ -109,12 +109,12 @@ namespace finjob_backend.Controllers
             {
                 if (id == 0)
                 {
-                    return BadRequest();
+                    return BadRequest(_response.IsSuccess = false);
                 }
                 var position = await _dbPosition.GetAsync(u => u.Id == id);
                 if (position == null)
                 {
-                    return NotFound();
+                    return NotFound(_response.IsSuccess = false);
                 }
                 await _dbPosition.RemoveAsync(position);
                 _response.StatusCode = HttpStatusCode.NoContent;
@@ -138,7 +138,7 @@ namespace finjob_backend.Controllers
             {
                 if (updateDTO == null || id != updateDTO.Id)
                 {
-                    return BadRequest();
+                    return BadRequest(_response.IsSuccess = false);
                 }
 
                 Position position = _mapper.Map<Position>(updateDTO);

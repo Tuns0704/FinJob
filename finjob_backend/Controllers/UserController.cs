@@ -2,7 +2,7 @@
 
 namespace finjob_backend.Controllers
 {
-    [Route("api/RoleAPI")]
+    [Route("api/userAPI")]
     [ApiController]
     public class UserController : ControllerBase
     {

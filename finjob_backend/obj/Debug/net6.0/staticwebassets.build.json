@@ -1,8 +1,8 @@
 {
   "Version": 1,
-  "Hash": "uetm1GsUya1VCP2jefTkX6coeVlQRD2vZZ557LO133g=",
-  "Source": "finjob_api",
-  "BasePath": "_content/finjob_api",
+  "Hash": "3olujr+QTrWyh/ThsulXQ50AmNkJGFez3TDwqVIrXtE=",
+  "Source": "finjob_backend",
+  "BasePath": "_content/finjob_backend",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],

@@ -5,6 +5,7 @@ using finjob_backend.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 using System.Net;
+using System.Text.Json;
 
 namespace finjob_backend.Controllers
 {
@@ -31,15 +32,18 @@ namespace finjob_backend.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<APIResponse>> GetJobList()
+        public async Task<ActionResult<APIResponse>> GetJobList(int pageSize = 10, int pageNumber = 1)
         {
             try
             {
-                IEnumerable<Job> jobList = await _dbJob.GetAllAsync(filter: null, includes: new Expression<Func<Job, object>>[]
+                IEnumerable<Job> jobList = await _dbJob.GetAllAsync(filter: null, pageSize: pageSize, pageNumber: pageNumber, includes: new Expression<Func<Job, object>>[]
                                   {
                                       x => x.Positions,
                                       x => x.Locations,
+                                      x => x.Company
                                   });
+                Pagination pagination = new() { pageNumber = pageNumber, pageSize = pageSize };
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
                 _response.Result = _mapper.Map<List<JobDTO>>(jobList);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
@@ -62,12 +66,17 @@ namespace finjob_backend.Controllers
             {
                 if (id == 0)
                 {
-                    return BadRequest();
+                    return BadRequest(_response.IsSuccess = false);
                 }
-                var job = await _dbJob.GetAsync(filter: x => x.Id == id, includes: x => x.Positions);
+                var job = await _dbJob.GetAsync(filter: x => x.Id == id, includes: new Expression<Func<Job, object>>[]
+                                  {
+                                      x => x.Positions,
+                                      x => x.Locations,
+                                      x => x.Company
+                                  });
                 if (job == null)
                 {
-                    return NotFound();
+                    return NotFound(_response.IsSuccess = false);
                 }
                 _response.Result = _mapper.Map<JobDTO>(job);
                 _response.StatusCode = HttpStatusCode.OK;
@@ -129,12 +138,12 @@ namespace finjob_backend.Controllers
             {
                 if (id == 0)
                 {
-                    return BadRequest();
+                    return BadRequest(_response.IsSuccess = false);
                 }
                 var job = await _dbJob.GetAsync(u => u.Id == id);
                 if (job == null)
                 {
-                    return NotFound();
+                    return NotFound(_response.IsSuccess = false);
                 }
                 await _dbJob.RemoveAsync(job);
                 _response.StatusCode = HttpStatusCode.NoContent;
@@ -158,7 +167,7 @@ namespace finjob_backend.Controllers
             {
                 if (updateDTO == null || id != updateDTO.Id)
                 {
-                    return BadRequest();
+                    return BadRequest(_response.IsSuccess = false);
                 }
                 if (await _dbCompany.GetAsync(u => u.Id == updateDTO.CompanyID) == null)
                 {
@@ -166,9 +175,57 @@ namespace finjob_backend.Controllers
                     return BadRequest();
                 }
 
-                Job job = _mapper.Map<Job>(updateDTO);
+                Job existingJob = await _dbJob.GetAsync(x => x.Id == id, includes: new Expression<Func<Job, object>>[]
+                {
+                    x => x.Positions,
+                    x => x.Locations
+                });
 
-                await _dbJob.UpdateAsync(job);
+                if (existingJob == null)
+                {
+                    return BadRequest(_response.IsSuccess = false);
+                }
+                _mapper.Map(updateDTO, existingJob);
+
+                var newLocations = await _dbLocation.GetAllAsync(x => updateDTO.LocationIds.Contains(x.Id));
+                var existingLocations = existingJob.Locations.ToList();
+
+                foreach (var location in existingLocations)
+                {
+                    if (!newLocations.Any(x => x.Id == location.Id))
+                    {
+                        existingJob.Locations.Remove(location);
+                    }
+                }
+
+                foreach (var location in newLocations)
+                {
+                    if (!existingLocations.Any(x => x.Id == location.Id))
+                    {
+                        existingJob.Locations.Add(location);
+                    }
+                }
+
+                var newPositions = await _dbPosition.GetAllAsync(x => updateDTO.PositionIds.Contains(x.Id));
+                var existingPositions = existingJob.Positions.ToList();
+
+                foreach (var position in existingPositions)
+                {
+                    if (!newPositions.Any(x => x.Id == position.Id))
+                    {
+                        existingJob.Positions.Remove(position);
+                    }
+                }
+
+                foreach (var position in newPositions)
+                {
+                    if (!existingPositions.Any(x => x.Id == position.Id))
+                    {
+                        existingJob.Positions.Add(position);
+                    }
+                }
+
+                await _dbJob.UpdateAsync(existingJob);
                 _response.StatusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
                 return Ok(_response);

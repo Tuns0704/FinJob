@@ -26,10 +26,12 @@ builder.Services.AddCors(options =>
         .WithOrigins("https://localhost:3000")
         .AllowCredentials());
 });
+builder.Services.AddResponseCaching();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+builder.Services.AddScoped<ITopSkillRepository, TopSkillRepository>();
 builder.Services.AddScoped<IJobRepository, JobRepository>();
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<IPositionRepository, PositionRepository>();

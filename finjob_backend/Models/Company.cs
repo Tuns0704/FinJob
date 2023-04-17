@@ -11,12 +11,12 @@ namespace finjob_backend.Models
         [Required]
         [MaxLength(30)]
         public string Name { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public string Scale { get; set; }
         public string ImageURL { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
-
+        public ICollection<ApplicationUser> Users { get; set; }
         public ICollection<Location> Locations { get; set; }
         public ICollection<Job> Jobs { get; set; }
     }

@@ -2,34 +2,36 @@
 using finjob_backend.Models;
 using finjob_backend.Models.DTO;
 using finjob_backend.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace finjob_backend.Controllers
 {
-    [Route("api/LocationAPI")]
+    [Route("api/TopSkillAPI")]
+    [Authorize(Roles = "Employee")]
     [ApiController]
-    public class LocationAPIController : Controller
+    public class TopSkillController : Controller
     {
         protected APIResponse _response;
-        private readonly ILocationRepository _dbLocation;
+        private readonly ITopSkillRepository _dbTopSkill;
         private readonly IMapper _mapper;
 
-        public LocationAPIController(ILocationRepository dbLocation, IMapper mapper)
+        public TopSkillController(ITopSkillRepository dbTopSkill, IMapper mapper)
         {
             this._response = new();
-            this._dbLocation = dbLocation;
+            this._dbTopSkill = dbTopSkill;
             this._mapper = mapper;
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<APIResponse>> GetLocationList(int pageSize = 10, int pageNumber = 1)
+        public async Task<ActionResult<APIResponse>> GetTopSkillList(int pageSize = 10, int pageNumber = 1)
         {
             try
             {
-                IEnumerable<Location> locationList = await _dbLocation.GetAllAsync(pageSize: pageSize, pageNumber: pageNumber);
-                _response.Result = _mapper.Map<List<LocationDTO>>(locationList);
+                IEnumerable<TopSkill> topSkillList = await _dbTopSkill.GetAllAsync(pageSize: pageSize, pageNumber: pageNumber);
+                _response.Result = _mapper.Map<List<TopSkillDTO>>(topSkillList);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
             }
@@ -41,11 +43,11 @@ namespace finjob_backend.Controllers
             return _response;
         }
 
-        [HttpGet("{id:int}", Name = "GetLocation")]
+        [HttpGet("{id:int}", Name = "GetTopSkill")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> GetLocation(int id)
+        public async Task<ActionResult<APIResponse>> GetTopSkill(int id)
         {
             try
             {
@@ -53,14 +55,12 @@ namespace finjob_backend.Controllers
                 {
                     return BadRequest(_response.IsSuccess = false);
                 }
-                var location = await _dbLocation.GetAsync(x => x.Id == id);
-
-
-                if (location == null)
+                var topSkill = await _dbTopSkill.GetAsync(x => x.Id == id);
+                if (topSkill == null)
                 {
                     return NotFound(_response.IsSuccess = false);
                 }
-                _response.Result = _mapper.Map<LocationDTO>(location);
+                _response.Result = _mapper.Map<TopSkillDTO>(topSkill);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
             }
@@ -76,7 +76,7 @@ namespace finjob_backend.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<APIResponse>> CreateLocation([FromBody] LocationCreateDTO createDTO)
+        public async Task<ActionResult<APIResponse>> CreateTopSkill([FromBody] TopSkillCreateDTO createDTO)
         {
             try
             {
@@ -85,13 +85,13 @@ namespace finjob_backend.Controllers
                     return BadRequest(createDTO);
                 }
 
-                Location location = _mapper.Map<Location>(createDTO);
+                TopSkill topSkill = _mapper.Map<TopSkill>(createDTO);
 
-                await _dbLocation.CreateAsync(location);
+                await _dbTopSkill.CreateAsync(topSkill);
 
-                _response.Result = _mapper.Map<LocationDTO>(location);
+                _response.Result = _mapper.Map<TopSkillDTO>(topSkill);
                 _response.StatusCode = HttpStatusCode.Created;
-                return CreatedAtRoute("GetLocation", new { id = location.Id }, _response); ;
+                return CreatedAtRoute("GetTopSkill", new { id = topSkill.Id }, _response); ;
             }
             catch (Exception ex)
             {
@@ -101,11 +101,11 @@ namespace finjob_backend.Controllers
             return _response;
         }
 
-        [HttpDelete("{id:int}", Name = "DeleteLocation")]
+        [HttpDelete("{id:int}", Name = "DeleteTopSkill")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> DeleteLocation(int id)
+        public async Task<ActionResult<APIResponse>> DeleteTopSkill(int id)
         {
             try
             {
@@ -113,12 +113,12 @@ namespace finjob_backend.Controllers
                 {
                     return BadRequest(_response.IsSuccess = false);
                 }
-                var location = await _dbLocation.GetAsync(u => u.Id == id);
-                if (location == null)
+                var topSkill = await _dbTopSkill.GetAsync(u => u.Id == id);
+                if (topSkill == null)
                 {
                     return NotFound(_response.IsSuccess = false);
                 }
-                await _dbLocation.RemoveAsync(location);
+                await _dbTopSkill.RemoveAsync(topSkill);
                 _response.StatusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
                 return Ok(_response);
@@ -131,10 +131,10 @@ namespace finjob_backend.Controllers
             return _response;
         }
 
-        [HttpPut("{id:int}", Name = "UpdateLocation")]
+        [HttpPut("{id:int}", Name = "UpdateTopSkill")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> UpdateLocation(int id, [FromBody] LocationUpdateDTO updateDTO)
+        public async Task<ActionResult<APIResponse>> UpdateTopSkill(int id, [FromBody] TopSkillUpdateDTO updateDTO)
         {
             try
             {
@@ -143,9 +143,9 @@ namespace finjob_backend.Controllers
                     return BadRequest(_response.IsSuccess = false);
                 }
 
-                Location location = _mapper.Map<Location>(updateDTO);
+                TopSkill topSkill = _mapper.Map<TopSkill>(updateDTO);
 
-                await _dbLocation.UpdateAsync(location);
+                await _dbTopSkill.UpdateAsync(topSkill);
                 _response.StatusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
                 return Ok(_response);

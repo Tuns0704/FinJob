@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using finjob_backend.Data;
 
@@ -11,9 +12,11 @@ using finjob_backend.Data;
 namespace finjob_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230416091058_AddTableForEmployeeAndCompany")]
+    partial class AddTableForEmployeeAndCompany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,21 +53,6 @@ namespace finjob_backend.Migrations
                     b.HasIndex("LocationsId");
 
                     b.ToTable("JobLocation");
-                });
-
-            modelBuilder.Entity("JobPosition", b =>
-                {
-                    b.Property<int>("JobsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PositionsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("JobsId", "PositionsId");
-
-                    b.HasIndex("PositionsId");
-
-                    b.ToTable("JobPosition");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -342,10 +330,6 @@ namespace finjob_backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
@@ -414,11 +398,16 @@ namespace finjob_backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("JobId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("JobId");
 
                     b.ToTable("Positions");
                 });
@@ -434,9 +423,8 @@ namespace finjob_backend.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Level")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -521,21 +509,6 @@ namespace finjob_backend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("JobPosition", b =>
-                {
-                    b.HasOne("finjob_backend.Models.Job", null)
-                        .WithMany()
-                        .HasForeignKey("JobsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("finjob_backend.Models.Position", null)
-                        .WithMany()
-                        .HasForeignKey("PositionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -607,6 +580,13 @@ namespace finjob_backend.Migrations
                     b.Navigation("Company");
                 });
 
+            modelBuilder.Entity("finjob_backend.Models.Position", b =>
+                {
+                    b.HasOne("finjob_backend.Models.Job", null)
+                        .WithMany("Positions")
+                        .HasForeignKey("JobId");
+                });
+
             modelBuilder.Entity("finjob_backend.Models.TopSkill", b =>
                 {
                     b.HasOne("finjob_backend.Models.ApplicationUser", "User")
@@ -657,6 +637,11 @@ namespace finjob_backend.Migrations
                     b.Navigation("Jobs");
 
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("finjob_backend.Models.Job", b =>
+                {
+                    b.Navigation("Positions");
                 });
 #pragma warning restore 612, 618
         }

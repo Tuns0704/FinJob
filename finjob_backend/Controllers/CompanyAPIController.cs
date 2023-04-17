@@ -4,6 +4,7 @@ using finjob_backend.Models.DTO;
 using finjob_backend.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Text.Json;
 
 namespace finjob_backend.Controllers
 {
@@ -24,14 +25,17 @@ namespace finjob_backend.Controllers
         }
 
         [HttpGet]
+        [ResponseCache(Duration = 30)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<APIResponse>> GetCompanyList()
+        public async Task<ActionResult<APIResponse>> GetCompanyList(int pageSize = 10, int pageNumber = 1)
         {
             try
             {
-                IEnumerable<Company> companyList = await _dbCompany.GetAllAsync(filter: null, includes: x => x.Locations);
+                IEnumerable<Company> companyList = await _dbCompany.GetAllAsync(filter: null, pageSize: pageSize, pageNumber: pageNumber, includes: x => x.Locations);
+                Pagination pagination = new() { pageNumber = pageNumber, pageSize = pageSize };
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
                 _response.Result = _mapper.Map<List<CompanyDTO>>(companyList);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
@@ -56,12 +60,12 @@ namespace finjob_backend.Controllers
             {
                 if (id == 0)
                 {
-                    return BadRequest();
+                    return BadRequest(_response.IsSuccess = false);
                 }
                 var company = await _dbCompany.GetAsync(x => x.Id == id, includes: x => x.Locations);
                 if (company == null)
                 {
-                    return NotFound();
+                    return NotFound(_response.IsSuccess = false);
                 }
                 _response.Result = _mapper.Map<CompanyDTO>(company);
                 _response.StatusCode = HttpStatusCode.OK;
@@ -126,12 +130,12 @@ namespace finjob_backend.Controllers
             {
                 if (id == 0)
                 {
-                    return BadRequest();
+                    return BadRequest(_response.IsSuccess = false);
                 }
                 var company = await _dbCompany.GetAsync(u => u.Id == id);
                 if (company == null)
                 {
-                    return NotFound();
+                    return NotFound(_response.IsSuccess = false);
                 }
                 await _dbCompany.RemoveAsync(company);
                 _response.StatusCode = HttpStatusCode.NoContent;
@@ -157,15 +161,23 @@ namespace finjob_backend.Controllers
             {
                 if (updateDTO == null || id != updateDTO.Id)
                 {
-                    return BadRequest();
+                    return BadRequest(_response.IsSuccess = false);
                 }
-                var location = await _dbLocation.GetAllAsync(x => updateDTO.LocationIds.Contains(x.Id));
-                Company model = _mapper.Map<Company>(updateDTO);
-                model.Locations = location;
 
-                await _dbCompany.UpdateAsync(model);
-                _response.StatusCode = HttpStatusCode.NoContent;
+                var company = await _dbCompany.GetAsync(x => x.Id == id, includes: x => x.Locations);
+                if (company == null)
+                {
+                    return NotFound();
+                }
+
+                _mapper.Map<CompanyUpdateDTO, Company>(updateDTO, company);
+                var newLocations = await _dbLocation.GetAllAsync(x => updateDTO.LocationIds.Contains(x.Id));
+                company.Locations = newLocations;
+
+                await _dbCompany.UpdateAsync(company);
+
                 _response.IsSuccess = true;
+                _response.StatusCode = HttpStatusCode.NoContent;
                 return Ok(_response);
             }
             catch (Exception ex)
@@ -173,39 +185,8 @@ namespace finjob_backend.Controllers
                 _response.IsSuccess = false;
                 _response.ErrorMessages = new List<string>() { ex.ToString() };
             }
+
             return _response;
         }
-
-        /*        [HttpPatch("{id:int}", Name = "UpdatePartialCompany")]
-                [ProducesResponseType(StatusCodes.Status204NoContent)]
-                [ProducesResponseType(StatusCodes.Status400BadRequest)]
-                [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-                [ProducesResponseType(StatusCodes.Status403Forbidden)]
-                public async Task<IActionResult> UpdatePartialCompany(int id, JsonPatchDocument<CompanyUpdateDTO> patchDTO)
-                {
-                    if (patchDTO == null || id == 0)
-                    {
-                        return BadRequest();
-                    }
-                    var company = await _dbCompany.GetAsync(u => u.Id == id, tracked: false);
-
-                    CompanyUpdateDTO companyDTO = _mapper.Map<CompanyUpdateDTO>(company);
-
-                    if (company == null)
-                    {
-                        return BadRequest();
-                    }
-                    patchDTO.ApplyTo(companyDTO, ModelState);
-
-                    Company model = _mapper.Map<Company>(companyDTO);
-
-                    await _dbCompany.UpdateAsync(model);
-
-                    if (!ModelState.IsValid)
-                    {
-                        return BadRequest(ModelState);
-                    }
-                    return NoContent();
-                }*/
     }
 }

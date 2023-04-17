@@ -11,14 +11,13 @@ namespace finjob_backend.Models
         [ForeignKey("Company")]
         public int CompanyID { get; set; }
         public Company Company { get; set; }
+        public string Title { get; set; }
         public string Description { get; set; }
         public string Requirement { get; set; }
         public string Benefits { get; set; }
         public string Salary { get; set; }
-
         public ICollection<Location> Locations { get; set; }
         public ICollection<Position> Positions { get; set; }
-
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
     }
