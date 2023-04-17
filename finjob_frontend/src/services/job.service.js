@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const getAllJobs = async () =>
-	axios.get(`https://localhost:7294/api/JobAPI`, {
+	axios.get(`${process.env.REACT_APP_API}/JobAPI`, {
 		headers: {
 			"Content-Type": "application/json",
 		},
@@ -9,7 +9,7 @@ export const getAllJobs = async () =>
 	});
 
 export const getJob = (id) =>
-	axios.get(`https://localhost:7294/api/JobAPI/${id}`, {
+	axios.get(`${process.env.REACT_APP_API}/JobAPI/${id}`, {
 		headers: {
 			"Content-Type": "application/json",
 		},
@@ -17,7 +17,7 @@ export const getJob = (id) =>
 	});
 
 export const createJob = (body) =>
-	axios.post(`https://localhost:7294/api/JobAPI`, body, {
+	axios.post(`${process.env.REACT_APP_API}/JobAPI`, body, {
 		headers: {
 			"Content-Type": "application/json",
 		},
@@ -25,7 +25,7 @@ export const createJob = (body) =>
 	});
 
 export const updateJob = (id, body) =>
-	axios.put(`https://localhost:7294/api/JobAPI/${id}`, body, {
+	axios.put(`${process.env.REACT_APP_API}/JobAPI/${id}`, body, {
 		headers: {
 			"Content-Type": "application/json",
 		},
@@ -33,7 +33,7 @@ export const updateJob = (id, body) =>
 	});
 
 export const deleteJob = (id) =>
-	axios.delete(`https://localhost:7294/api/JobAPI/${id}`, {
+	axios.delete(`${process.env.REACT_APP_API}/JobAPI/${id}`, {
 		headers: {
 			"Content-Type": "application/json",
 		},

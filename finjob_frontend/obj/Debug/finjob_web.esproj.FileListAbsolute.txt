@@ -1,0 +1,2 @@
+D:\Important\Greenwich\Top Up - UoG\Final Year Project\FinJob\FinJob_FrontEnd\obj\Debug\finjob_web.esproj.SuggestedBindingRedirects.cache
+D:\Important\Greenwich\Top Up - UoG\Final Year Project\FinJob\FinJob_FrontEnd\obj\Debug\finjob_web.esproj.CoreCompileInputs.cache

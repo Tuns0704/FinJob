@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const getAllLocations = () =>
-	axios.get(`https://localhost:7294/api/LocationAPI`, {
+	axios.get(`${process.env.REACT_APP_API}/LocationAPI`, {
 		headers: {
 			"Content-Type": "application/json",
 		},
@@ -9,7 +9,7 @@ export const getAllLocations = () =>
 	});
 
 export const getLocation = (id) =>
-	axios.get(`https://localhost:7294/api/LocationAPI/${id}`, {
+	axios.get(`${process.env.REACT_APP_API}/LocationAPI/${id}`, {
 		headers: {
 			"Content-Type": "application/json",
 		},
@@ -17,7 +17,7 @@ export const getLocation = (id) =>
 	});
 
 export const createLocation = (body) =>
-	axios.post(`https://localhost:7294/api/LocationAPI`, body, {
+	axios.post(`${process.env.REACT_APP_API}/LocationAPI`, body, {
 		headers: {
 			"Content-Type": "application/json",
 		},
@@ -25,7 +25,7 @@ export const createLocation = (body) =>
 	});
 
 export const updateLocation = (id, body) =>
-	axios.put(`https://localhost:7294/api/LocationAPI/${id}`, body, {
+	axios.put(`${process.env.REACT_APP_API}/LocationAPI/${id}`, body, {
 		headers: {
 			"Content-Type": "application/json",
 		},
@@ -33,7 +33,7 @@ export const updateLocation = (id, body) =>
 	});
 
 export const deleteLocation = (id) =>
-	axios.delete(`https://localhost:7294/api/LocationAPI/${id}`, {
+	axios.delete(`${process.env.REACT_APP_API}/LocationAPI/${id}`, {
 		headers: {
 			"Content-Type": "application/json",
 		},

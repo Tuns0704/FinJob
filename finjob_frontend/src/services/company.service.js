@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const getAllCompanys = async () =>
-	axios.get(`https://localhost:7294/api/CompanyAPI`, {
+	axios.get(`${process.env.REACT_APP_API}/CompanyAPI`, {
 		headers: {
 			"Content-Type": "application/json",
 		},
@@ -9,7 +9,7 @@ export const getAllCompanys = async () =>
 	});
 
 export const getCompany = (id) =>
-	axios.get(`https://localhost:7294/api/CompanyAPI/${id}`, {
+	axios.get(`${process.env.REACT_APP_API}/CompanyAPI/${id}`, {
 		headers: {
 			"Content-Type": "application/json",
 		},
@@ -17,7 +17,7 @@ export const getCompany = (id) =>
 	});
 
 export const createCompany = (body) =>
-	axios.post(`https://localhost:7294/api/CompanyAPI`, body, {
+	axios.post(`${process.env.REACT_APP_API}/CompanyAPI`, body, {
 		headers: {
 			"Content-Type": "application/json",
 		},
@@ -25,7 +25,7 @@ export const createCompany = (body) =>
 	});
 
 export const updateCompany = (id, body) =>
-	axios.put(`https://localhost:7294/api/CompanyAPI/${id}`, body, {
+	axios.put(`${process.env.REACT_APP_API}/CompanyAPI/${id}`, body, {
 		headers: {
 			"Content-Type": "application/json",
 		},
@@ -33,7 +33,7 @@ export const updateCompany = (id, body) =>
 	});
 
 export const deleteCompany = async (id) =>
-	axios.delete(`https://localhost:7294/api/CompanyAPI/${id}`, {
+	axios.delete(`${process.env.REACT_APP_API}/CompanyAPI/${id}`, {
 		headers: {
 			"Content-Type": "application/json",
 		},

@@ -7,7 +7,7 @@ const SidebarProfile = () => {
 		state: { user },
 	} = useContext(authContext);
 	return (
-		<div className="max-w-sm py-10 px-10 flex flex-col gap-10">
+		<div className="hidden max-w-sm py-5 px-10 sm:flex flex-col gap-5">
 			<div className="lg:mx-0 px-10 py-10 bg-white rounded-lg flex flex-col justify-center items-center gap-5">
 				<img
 					className="h-16 w-16 rounded-full"
@@ -17,7 +17,7 @@ const SidebarProfile = () => {
 				<h2 className="text-2xl font-bold tracking-tight text-dark sm:text-2xl">
 					{user.name}
 				</h2>
-				<p className="mt-2 text-lg leading-8 text-gray-400">
+				<p className="mt-2 text-lg leading-8 text-gray-400 text-center">
 					Junior Front-End Developer
 				</p>
 				<button className="rounded-3xl bg-lightTurquoise py-2 px-10 w-60 text-sm font-semibold text-secondary shadow-sm">

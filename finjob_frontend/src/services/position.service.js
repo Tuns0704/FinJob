@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const getAllPositions = () =>
-	axios.get(`https://localhost:7294/api/PositionAPI`, {
+	axios.get(`${process.env.REACT_APP_API}/PositionAPI`, {
 		headers: {
 			"Content-Type": "application/json",
 		},
@@ -9,7 +9,7 @@ export const getAllPositions = () =>
 	});
 
 export const getPosition = (id) =>
-	axios.get(`https://localhost:7294/api/PositionAPI/${id}`, {
+	axios.get(`${process.env.REACT_APP_API}/PositionAPI/${id}`, {
 		headers: {
 			"Content-Type": "application/json",
 		},
@@ -17,7 +17,7 @@ export const getPosition = (id) =>
 	});
 
 export const createPosition = (body) =>
-	axios.post(`https://localhost:7294/api/PositionAPI`, body, {
+	axios.post(`${process.env.REACT_APP_API}/PositionAPI`, body, {
 		headers: {
 			"Content-Type": "application/json",
 		},
@@ -25,7 +25,7 @@ export const createPosition = (body) =>
 	});
 
 export const updatePosition = (id, body) =>
-	axios.put(`https://localhost:7294/api/PositionAPI/${id}`, body, {
+	axios.put(`${process.env.REACT_APP_API}/PositionAPI/${id}`, body, {
 		headers: {
 			"Content-Type": "application/json",
 		},
@@ -33,7 +33,7 @@ export const updatePosition = (id, body) =>
 	});
 
 export const deletePosition = (id) =>
-	axios.delete(`https://localhost:7294/api/PositionAPI/${id}`, {
+	axios.delete(`${process.env.REACT_APP_API}/PositionAPI/${id}`, {
 		headers: {
 			"Content-Type": "application/json",
 		},

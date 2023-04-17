@@ -8,13 +8,13 @@ const LandingPage = () => {
 			<div className="pt-24">
 				<div className="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
 					<div className="flex flex-col w-full md:w-2/5 justify-center items-center md:items-start text-center md:text-left">
-						<p className="uppercase font-poppins text-light tracking-loose w-full">
+						<p className="uppercase text-light tracking-loose w-full">
 							Want to find a new job?
 						</p>
-						<h1 className="my-4 text-5xl font-bold font-poppins text-light leading-tight">
+						<h1 className="my-4 text-5xl font-bold text-light leading-tight">
 							So what are you waiting for?
 						</h1>
-						<p className="leading-normal font-poppins text-light text-2xl mb-8">
+						<p className="leading-normal text-light text-2xl mb-8">
 							Use our application to find your dream Job !!!
 						</p>
 						<div className="flex justify-between items-start text-center w-64">

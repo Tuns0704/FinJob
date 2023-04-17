@@ -7,6 +7,7 @@ import AdminContainer from "../containers/admin.container";
 import AppContainer from "../containers/app.container";
 import LandingPage from "../features/landing-page/landingpage";
 import HomePage from "../features/home-page/HomePage";
+import NotFound from "../features/error/not-found";
 
 const AppRouter = () => {
 	const {
@@ -40,6 +41,7 @@ const AppRouter = () => {
               <Route path='user-profile/:id' element={<UserProfile />} /> */}
 						</>
 					))}
+				<Route path="*" element={<NotFound />} />
 			</Route>
 		</Routes>
 	);

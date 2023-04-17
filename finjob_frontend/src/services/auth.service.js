@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const register = (body) =>
-	axios.post(`https://localhost:7294/api/auth/register`, body, {
+	axios.post(`${process.env.REACT_APP_API}/auth/register`, body, {
 		headers: {
 			"Content-Type": "application/json",
 		},
@@ -9,7 +9,7 @@ export const register = (body) =>
 	});
 
 export const login = (body) =>
-	axios.post(`https://localhost:7294/api/auth/login`, body, {
+	axios.post(`${process.env.REACT_APP_API}/auth/login`, body, {
 		headers: {
 			"Content-Type": "application/json",
 		},
