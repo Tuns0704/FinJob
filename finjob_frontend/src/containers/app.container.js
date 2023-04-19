@@ -12,7 +12,7 @@ const AppContainer = () => {
 		<div>
 			{isAuthenticated && <Navbar />}
 			<div
-				className={`min-h-[85vh] bg-gray-100 ${isAuthenticated ? "pt-20" : ""}`}
+				className={`min-h-screen bg-gray-100 ${isAuthenticated ? "pt-20" : ""}`}
 			>
 				<Outlet />
 			</div>
