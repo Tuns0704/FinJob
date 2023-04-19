@@ -61,20 +61,16 @@ export default function LoginPage() {
 							onSubmit={handleSubmit(onSubmit)}
 						>
 							<div>
-								<label
-									htmlFor="userName"
-									className="block mb-2 text-sm font-medium text-gray-90"
-								>
+								<label className="block mb-2 text-sm font-medium text-gray-90">
 									Username
+									<input
+										type="text"
+										className="bg-light border-lightOrange text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+										placeholder="name@company.com"
+										{...register("userName")}
+									/>
 								</label>
-								<input
-									type="text"
-									name="userName"
-									id="userName"
-									className="bg-light border-lightOrange text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-									placeholder="name@company.com"
-									{...register("userName")}
-								/>
+
 								<ErrorMessage
 									errors={errors}
 									name="userName"
@@ -84,20 +80,15 @@ export default function LoginPage() {
 								/>
 							</div>
 							<div>
-								<label
-									htmlFor="password"
-									className="block mb-2 text-sm font-medium text-dark"
-								>
+								<label className="block mb-2 text-sm font-medium text-dark">
 									Password
+									<input
+										placeholder="••••••••"
+										className="bg-light border-lightOrange text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+										type="password"
+										{...register("password")}
+									/>
 								</label>
-								<input
-									name="password"
-									id="password"
-									placeholder="••••••••"
-									className="bg-light border-lightOrange text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-									type="password"
-									{...register("password")}
-								/>
 								<ErrorMessage
 									errors={errors}
 									name="password"
