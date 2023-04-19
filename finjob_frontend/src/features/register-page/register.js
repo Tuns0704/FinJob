@@ -5,9 +5,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { ErrorMessage } from "@hookform/error-message";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
 import { register as registerAccount } from "../../services/auth.service";
+import { getAllLocations } from "../../services/location.service";
+import { createCompany } from "../../services/company.service";
 import logo from "../../assets/FinJobLogo.png";
+import { useEffect, useState } from "react";
+import Select from "react-select";
 
 const validationSchema = yup.object().shape({
 	role: yup
@@ -16,7 +19,7 @@ const validationSchema = yup.object().shape({
 	name: yup
 		.string()
 		// .email("Email is invalid")
-		.required("Email must be filled"),
+		.required("Name must be filled"),
 	userName: yup.string().required("Username is required"),
 	password: yup
 		.string()
@@ -25,6 +28,13 @@ const validationSchema = yup.object().shape({
 			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
 			"Must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character"
 		),
+	company: yup.object().shape({
+		name: yup.string().required("Company name is required"),
+		description: yup.string().required("Company description is required"),
+		scale: yup.string().required("Company scale is required"),
+		location: yup.array().required("Company location is required"),
+		imageURL: yup.string().required("Company image URL is required"),
+	}),
 	confirmPassword: yup
 		.string()
 		.oneOf([yup.ref("password"), null], "Passwords must match")
@@ -40,6 +50,7 @@ export default function RegisterPage() {
 		register,
 		handleSubmit,
 		formState: { errors, isValid },
+		watch,
 	} = useForm({
 		resolver: yupResolver(validationSchema),
 		defaultValues: {
@@ -49,24 +60,88 @@ export default function RegisterPage() {
 			password: "",
 			confirmPassword: "",
 			terms: false,
+			company: {
+				name: "",
+				description: "",
+				scale: "",
+				location: [],
+				imageURL: "",
+			},
 		},
 		mode: "all",
 		reValidateMode: "onSubmit",
 		criteriaMode: "all",
 	});
 
-	const onSubmit = async (body) => {
-		const { data: response } = await registerAccount(body);
+	const [locationsFields, setLocationsFields] = useState([]);
+	const [selectedLocations, setSelectedLocations] = useState([]);
+
+	const getLocations = async () => {
+		const { data: response } = await getAllLocations();
 		if (response.statusCode === 200) {
-			toast.success("Register success!");
-			navigate("/login");
-		} else {
-			toast.error(response.errorMessages[0]);
+			setLocationsFields(
+				response.result.map((location) => ({
+					value: parseInt(location.id),
+					label: location.name,
+				}))
+			);
 		}
 	};
+
+	useEffect(() => {
+		getLocations();
+	}, []);
+
+	const handleChange = (selectedOptions) => {
+		setSelectedLocations(selectedOptions);
+		console.log(selectedLocations);
+	};
+
+	const onSubmit = async (body) => {
+		try {
+			let response;
+			if (body.role === "BusinessEmployer") {
+				const company = {
+					name: body.company.name,
+					description: body.company.description,
+					scale: body.company.scale,
+					locationIds: selectedLocations.map((location) =>
+						parseInt(location.value)
+					),
+					imageURL: body.company.imageURL,
+				};
+				console.log(company.locationIds);
+				const { data: companyResponse } = await createCompany(company);
+
+				if (companyResponse.statusCode === 201) {
+					const user = {
+						role: body.role,
+						name: body.name,
+						userName: body.userName,
+						password: body.password,
+						companyId: companyResponse.result.id,
+					};
+					({ data: response } = await registerAccount(user));
+				}
+			} else if (body.role === "Employee") {
+				({ data: response } = await registerAccount(body));
+			}
+
+			if (response.statusCode === 200) {
+				toast.success("Register success!");
+				navigate("/login");
+			} else {
+				toast.error(response.errorMessages[0]);
+			}
+		} catch (error) {
+			console.error(error);
+			toast.error("An error occurred. Please try again.");
+		}
+	};
+
 	return (
-		<div className="gradient">
-			<div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-[100vh] lg:py-0">
+		<div className="gradient pt-10 min-h-screen">
+			<div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-fit lg:py-0">
 				<div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 ">
 					<div className="p-6 space-y-4 md:space-y-6 sm:p-8">
 						<Link
@@ -83,20 +158,15 @@ export default function RegisterPage() {
 							onSubmit={handleSubmit(onSubmit)}
 						>
 							<div>
-								<label
-									htmlFor="userName"
-									className="block mb-2 text-sm font-medium text-gray-90"
-								>
+								<label className="block mb-2 text-sm font-medium text-gray-90">
 									Username
+									<input
+										type="text"
+										className="bg-light border-lightOrange text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+										placeholder="Username"
+										{...register("userName")}
+									/>
 								</label>
-								<input
-									type="text"
-									name="userName"
-									id="userName"
-									className="bg-light border-lightOrange text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-									placeholder="Username"
-									{...register("userName")}
-								/>
 								<ErrorMessage
 									errors={errors}
 									name="userName"
@@ -106,20 +176,15 @@ export default function RegisterPage() {
 								/>
 							</div>
 							<div>
-								<label
-									htmlFor="name"
-									className="block mb-2 text-sm font-medium text-gray-90"
-								>
+								<label className="block mb-2 text-sm font-medium text-gray-90">
 									Your Name
+									<input
+										type="text"
+										className="bg-light border-lightOrange text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+										placeholder="Nguyen Van A"
+										{...register("name")}
+									/>
 								</label>
-								<input
-									type="name"
-									name="name"
-									id="name"
-									className="bg-light border-lightOrange text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-									placeholder="Nguyen Van A"
-									{...register("name")}
-								/>
 								<ErrorMessage
 									errors={errors}
 									name="name"
@@ -129,15 +194,53 @@ export default function RegisterPage() {
 								/>
 							</div>
 							<div>
-								<label htmlFor="role">You are?</label>
-								<select
-									className="bg-light border-lightOrange text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-									{...register("role")}
-								>
-									<option value="">Select</option>
-									<option value="Employee">Employee</option>
-									<option value="BusinessEmployer">Business Employer</option>
-								</select>
+								<label className="block mb-2 text-sm font-medium text-dark">
+									Password
+									<input
+										placeholder="••••••••"
+										className="bg-light border-lightOrange text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+										type="password"
+										{...register("password")}
+									/>
+								</label>
+								<ErrorMessage
+									errors={errors}
+									name="password"
+									render={({ message }) => (
+										<p className="text-primary text-sm">{message}</p>
+									)}
+								/>
+							</div>
+							<div>
+								<label className="block mb-2 text-sm font-medium text-dark">
+									Confirm password
+									<input
+										placeholder="••••••••"
+										type="password"
+										{...register("confirmPassword")}
+										className="bg-light border-lightOrange text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+									/>
+								</label>
+								<ErrorMessage
+									errors={errors}
+									name="confirmPassword"
+									render={({ message }) => (
+										<p className="text-primary text-sm">{message}</p>
+									)}
+								/>
+							</div>
+							<div>
+								<label>
+									You are?
+									<select
+										className="bg-light border-lightOrange text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+										{...register("role")}
+									>
+										<option value="">Select</option>
+										<option value="Employee">Employee</option>
+										<option value="BusinessEmployer">Business Employer</option>
+									</select>
+								</label>
 								<ErrorMessage
 									errors={errors}
 									name="role"
@@ -146,52 +249,103 @@ export default function RegisterPage() {
 									)}
 								/>
 							</div>
-							<div>
-								<label
-									htmlFor="password"
-									className="block mb-2 text-sm font-medium text-dark"
-								>
-									Password
-								</label>
-								<input
-									name="password"
-									id="password"
-									placeholder="••••••••"
-									className="bg-light border-lightOrange text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-									type="password"
-									{...register("password")}
-								/>
-								<ErrorMessage
-									errors={errors}
-									name="password"
-									render={({ message }) => (
-										<p className="text-primary text-sm">{message}</p>
-									)}
-								/>
-							</div>
-							<div>
-								<label
-									htmlFor="confirmPassword"
-									className="block mb-2 text-sm font-medium text-dark"
-								>
-									Confirm password
-								</label>
-								<input
-									name="confirmPassword"
-									id="confirmPassword"
-									placeholder="••••••••"
-									type="password"
-									{...register("confirmPassword")}
-									className="bg-light border-lightOrange text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-								/>
-								<ErrorMessage
-									errors={errors}
-									name="confirmPassword"
-									render={({ message }) => (
-										<p className="text-primary text-sm">{message}</p>
-									)}
-								/>
-							</div>
+							{watch("role") === "BusinessEmployer" && (
+								<>
+									<div>
+										<label className="block mb-2 text-sm font-medium text-gray-90">
+											Company Name
+											<input
+												type="text"
+												className="bg-light border-lightOrange text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+												placeholder="FinJob Technology"
+												{...register("company.name")}
+											/>
+										</label>
+										<ErrorMessage
+											errors={errors}
+											name="company.name"
+											render={({ message }) => (
+												<p className="text-primary text-sm">{message}</p>
+											)}
+										/>
+									</div>
+									<div>
+										<label className="block mb-2 text-sm font-medium text-gray-90">
+											Company Description
+											<input
+												type="text"
+												className="bg-light border-lightOrange text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+												placeholder="FinJob is a high technology company..."
+												{...register("company.description")}
+											/>
+										</label>
+										<ErrorMessage
+											errors={errors}
+											name="company.description"
+											render={({ message }) => (
+												<p className="text-primary text-sm">{message}</p>
+											)}
+										/>
+									</div>
+									<div>
+										<label className="block mb-2 text-sm font-medium text-gray-90">
+											Company Scale
+											<input
+												type="text"
+												className="bg-light border-lightOrange text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+												placeholder="FinJob Technology"
+												{...register("company.scale")}
+											/>
+										</label>
+										<ErrorMessage
+											errors={errors}
+											name="company.scale"
+											render={({ message }) => (
+												<p className="text-primary text-sm">{message}</p>
+											)}
+										/>
+									</div>
+									<Select
+										className="bg-light border-lightOrange text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+										placeholder="Select Company Location"
+										{...register("company.location")}
+										isMulti
+										options={locationsFields}
+										value={selectedLocations}
+										onChange={handleChange}
+									/>
+									<ErrorMessage
+										errors={errors}
+										name="company.location"
+										render={({ message }) => (
+											<p className="text-primary text-sm">{message}</p>
+										)}
+									/>
+									<div>
+										<label
+											htmlFor="companyImageURL"
+											className="block mb-2 text-sm font-medium text-gray-90"
+										>
+											Company Image URL
+										</label>
+										<input
+											type="text"
+											name="companyImageURL"
+											id="companyImageURL"
+											className="bg-light border-lightOrange text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+											placeholder="FinJob Technology"
+											{...register("company.imageURL")}
+										/>
+										<ErrorMessage
+											errors={errors}
+											name="company.imageURL"
+											render={({ message }) => (
+												<p className="text-primary text-sm">{message}</p>
+											)}
+										/>
+									</div>
+								</>
+							)}
 							<div className="flex items-start">
 								<div className="flex items-center h-5">
 									<input
@@ -241,7 +395,7 @@ export default function RegisterPage() {
 					</div>
 				</div>
 			</div>
-			{/* <div className="relative -mt-12 lg:-mt-24">
+			<div className="relative -mt-12 lg:-mt-24">
 				<svg viewBox="0 0 1428 174" xmlns="http://www.w3.org/2000/svg">
 					<g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
 						<g
@@ -272,7 +426,7 @@ export default function RegisterPage() {
 						</g>
 					</g>
 				</svg>
-			</div> */}
+			</div>
 		</div>
 	);
 }
