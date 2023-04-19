@@ -86,7 +86,8 @@ namespace finjob_backend.Repository
                 UserName = registerationRequestDTO.UserName,
                 Email = registerationRequestDTO.UserName,
                 NormalizedEmail = registerationRequestDTO.UserName.ToUpper(),
-                Name = registerationRequestDTO.Name
+                Name = registerationRequestDTO.Name,
+                CompanyId = registerationRequestDTO.CompanyId,
             };
             try
             {
