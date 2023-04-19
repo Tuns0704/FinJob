@@ -46,9 +46,9 @@ export default function CardItem(item) {
 				</div>
 			</div>
 			<div className="flex justify-between">
-				<div className="px-5 py-3 w-4/6 flex justify-between">
-					<div className="flex gap-2 w-3/6">
-						<div>
+				<div className="lg:flex sm:px-0 h-20 px-5 py-3 w-4/6 flex-row justify-between">
+					<div className="flex gap-1 w-2/6">
+						<div className="sm:flex">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
@@ -64,10 +64,12 @@ export default function CardItem(item) {
 								/>
 							</svg>
 						</div>
-						<div className="text-secondary">{item.item.salary}</div>
+						<div className="flex self-center text-secondary">
+							{item.item.salary}
+						</div>
 					</div>
-					<div className="flex gap-2">
-						<div>
+					<div className="flex gap-1 w-5/6">
+						<div className="sm:flex">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
@@ -83,30 +85,19 @@ export default function CardItem(item) {
 								/>
 							</svg>
 						</div>
-						<div className="text-secondary">55 People Applied</div>
+						<div className="flex self-center text-secondary">
+							55 People Applied
+						</div>
 					</div>
 				</div>
-				<div className=" px-14 py-3 rounded-lg bg-primary text-white text-bold">
-					Apply Now
+				<div className="flex items-center">
+					<div className="py-3 rounded-lg bg-primary text-white text-bold">
+						<div className="px-5 w-full flex justify-center self-center">
+							Apply Now
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-		// <div className="bg-white rounded-xl h-60 my-5">
-		// 	<div className="flex">
-		// 		<div className="flex-shrink-0">
-		// 			<div className="text-primary">{item.item.requirement}</div>
-		// 			<div className="text-primary">{item.item.salary}</div>
-		// 			<div className="text-primary">{item.item.benefits}</div>
-		// 			{item.item.locations.map((location) => (
-		// 				<div className="text-primary" key={location}>
-		// 					{location}
-		// 				</div>
-		// 			))}
-		// 			<div>{company.name}</div>
-		// 			<div>{company.scale}</div>
-		// 			<div>{company.description}</div>
-		// 		</div>
-		// 	</div>
-		// </div>
 	);
 }
