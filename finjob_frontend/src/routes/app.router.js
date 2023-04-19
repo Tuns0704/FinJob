@@ -8,6 +8,8 @@ import AppContainer from "../containers/app.container";
 import LandingPage from "../features/landing-page/landingpage";
 import HomePage from "../features/home-page/HomePage";
 import NotFound from "../features/error/not-found";
+import AdminManageJob from "../features/admin-manage-job";
+import JobDetail from "../features/detail";
 
 const AppRouter = () => {
 	const {
@@ -31,14 +33,23 @@ const AppRouter = () => {
 					(role === "Admin" ? (
 						<>
 							<Route path="/" element={<AdminContainer />} />
+							<Route path="/jobs" element={<AdminManageJob />} />
+							<Route path="/detail/:id" element={<JobDetail />} />
+						</>
+					) : role === "BusinessEmployer" ? (
+						<>
+							<Route path="app" element={<AppContainer />} />
+							<Route path="/" element={<HomePage />} />
+							<Route path="/detail/:id" element={<JobDetail />} />
+							{/* <Route path='/connections' element={<Connections />} />
+              <Route path='detail/:id' element={<PostDetail />} />
+              <Route path='user-profile/:id' element={<UserProfile />} /> */}
 						</>
 					) : (
 						<>
 							<Route path="app" element={<AppContainer />} />
 							<Route path="/" element={<HomePage />} />
-							{/* <Route path='/connections' element={<Connections />} />
-              <Route path='detail/:id' element={<PostDetail />} />
-              <Route path='user-profile/:id' element={<UserProfile />} /> */}
+							<Route path="/detail/:id" element={<JobDetail />} />
 						</>
 					))}
 				<Route path="*" element={<NotFound />} />
