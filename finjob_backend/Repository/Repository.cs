@@ -1,4 +1,5 @@
 ﻿using finjob_backend.Data;
+using finjob_backend.Models;
 using finjob_backend.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -47,7 +48,7 @@ namespace finjob_backend.Repository
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, int pageSize = 0, int pageNumber = 1, params Expression<Func<T, object>>[]? includes)
+        public async Task<PaginationResult<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, int pageSize = 0, int pageNumber = 1, params Expression<Func<T, object>>[]? includes)
         {
             IQueryable<T> query = dbSet;
 
@@ -62,6 +63,9 @@ namespace finjob_backend.Repository
                     query = query.Include(include);
                 }
             }
+
+            var totalCount = await query.CountAsync();
+
             if (pageSize > 0)
             {
                 if (pageSize > 100)
@@ -71,7 +75,18 @@ namespace finjob_backend.Repository
                 query = query.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
             }
 
-            return await query.ToListAsync();
+            var data = await query.ToListAsync();
+
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+            var currentPage = pageNumber;
+
+            return new PaginationResult<T>
+            {
+                Data = data,
+                TotalCount = totalCount,
+                TotalPages = totalPages,
+                CurrentPage = currentPage
+            };
         }
 
         public async Task RemoveAsync(T entity)
