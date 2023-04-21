@@ -16,7 +16,7 @@ const AppContainer = () => {
 			>
 				<Outlet />
 			</div>
-			{isAuthenticated && <Footer />}
+			{isAuthenticated && pathname !== "/messages" ? <Footer /> : <></>}
 		</div>
 	);
 };
