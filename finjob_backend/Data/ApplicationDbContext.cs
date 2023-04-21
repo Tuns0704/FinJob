@@ -10,7 +10,6 @@ namespace finjob_backend.Data
         {
         }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-        public DbSet<LocalUser> LocalUsers { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<Job> Jobs { get; set; }
         public DbSet<Location> Locations { get; set; }
@@ -43,5 +42,7 @@ namespace finjob_backend.Data
                 .HasMany<WorkExprience>(u => u.WorkExpriences)
                 .WithOne(u => u.User);
         }
+
+        public DbSet<finjob_backend.Models.DTO.UserDTO>? UserDTO { get; set; }
     }
 }
