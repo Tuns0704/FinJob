@@ -1,16 +1,17 @@
 import { React, useState, useEffect, useCallback } from "react";
 import { getCompany } from "../../services/company.service";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function CardItem(item) {
 	const [company, setCompany] = useState([]);
+	const navigate = useNavigate();
 
 	const getCompanyById = useCallback(async () => {
 		try {
 			const response = await getCompany(item.item.companyID);
 			if (response.status === 200) {
 				setCompany(response.data.result);
-				console.log(response.data.result);
 			}
 		} catch (error) {
 			console.log(error);
@@ -29,14 +30,24 @@ export default function CardItem(item) {
 						<img src={company.imageURL} alt="" />
 					</div>
 					<div className="flex flex-col">
-						<div className="text-2xl font-medium">{item.item.title}</div>
+						<div
+							className="text-2xl font-medium hover:cursor-pointer"
+							onClick={() => navigate(`detail/${item.item.id}`)}
+						>
+							{item.item.title}
+						</div>
 						<div className="text-gray-400">{company.name}</div>
 					</div>
 				</div>
 				<div>Header Button Card</div>
 			</div>
 			<div>
-				<div className="text-justify mb-5">{item.item.description}</div>
+				<div
+					className="text-justify mb-5 hover:cursor-pointer"
+					onClick={() => navigate(`detail/${item.item.id}`)}
+				>
+					{item.item.description}
+				</div>
 				<div className="flex gap-2 mb-5">
 					{item.item.locations.map((location) => (
 						<div key={location} className="px-5 py-3 bg-gray-100 rounded-lg">
