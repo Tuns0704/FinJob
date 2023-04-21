@@ -5,6 +5,7 @@ using finjob_backend.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Text.Json;
 
 namespace finjob_backend.Controllers
 {
@@ -30,10 +31,33 @@ namespace finjob_backend.Controllers
         {
             try
             {
-                IEnumerable<TopSkill> topSkillList = await _dbTopSkill.GetAllAsync(pageSize: pageSize, pageNumber: pageNumber);
-                _response.Result = _mapper.Map<List<TopSkillDTO>>(topSkillList);
+                var paginationResult = await _dbTopSkill.GetAllAsync(pageSize: pageSize, pageNumber: pageNumber);
+                var pagination = new Pagination { PageSize = pageSize, PageNumber = pageNumber, TotalCount = paginationResult.TotalCount, TotalPages = paginationResult.TotalPages };
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
+                _response.Result = _mapper.Map<List<LocationDTO>>(paginationResult.Data);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string>() { ex.ToString() };
+            }
+            return _response;
+        }
+
+        [HttpGet("{userId}", Name = "GetTopSkillByUserId")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<APIResponse>> GetTopSkillListByUser(string userId, int pageSize = 10, int pageNumber = 1)
+        {
+            try
+            {
+                var paginationResult = await _dbTopSkill.GetAllAsync(filter: x => x.UserId == userId, pageSize: pageSize, pageNumber: pageNumber);
+                var pagination = new Pagination { PageSize = pageSize, PageNumber = pageNumber, TotalCount = paginationResult.TotalCount, TotalPages = paginationResult.TotalPages };
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
+                _response.Result = _mapper.Map<List<LocationDTO>>(paginationResult.Data);
+                _response.StatusCode = HttpStatusCode.OK;
+                return Ok(_response); ;
             }
             catch (Exception ex)
             {

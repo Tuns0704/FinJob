@@ -2,6 +2,7 @@
 using finjob_backend.Models;
 using finjob_backend.Models.DTO;
 using finjob_backend.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 using System.Net;
@@ -36,24 +37,23 @@ namespace finjob_backend.Controllers
         {
             try
             {
-                IEnumerable<Job> jobList = await _dbJob.GetAllAsync(filter: null, pageSize: pageSize, pageNumber: pageNumber, includes: new Expression<Func<Job, object>>[]
-                                  {
-                                      x => x.Positions,
-                                      x => x.Locations,
-                                      x => x.Company
-                                  });
-                Pagination pagination = new() { pageNumber = pageNumber, pageSize = pageSize };
+                var paginationResult = await _dbJob.GetAllAsync(filter: null, pageSize: pageSize, pageNumber: pageNumber, includes: new Expression<Func<Job, object>>[]
+                    {
+                            x => x.Positions,
+                            x => x.Locations,
+                            x => x.Company
+                    });
+                var pagination = new Pagination { PageSize = pageSize, PageNumber = pageNumber, TotalCount = paginationResult.TotalCount, TotalPages = paginationResult.TotalPages };
                 Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
-                _response.Result = _mapper.Map<List<JobDTO>>(jobList);
-                _response.StatusCode = HttpStatusCode.OK;
-                return Ok(_response);
+                var jobList = _mapper.Map<List<JobDTO>>(paginationResult.Data);
+                var response = new APIResponse { IsSuccess = true, Result = jobList, StatusCode = HttpStatusCode.OK };
+                return Ok(response);
             }
             catch (Exception ex)
             {
-                _response.IsSuccess = false;
-                _response.ErrorMessages = new List<string>() { ex.ToString() };
+                var response = new APIResponse { IsSuccess = false, ErrorMessages = new List<string>() { ex.ToString() } };
+                return response;
             }
-            return _response;
         }
 
         [HttpGet("{id:int}", Name = "GetJob")]
@@ -89,7 +89,9 @@ namespace finjob_backend.Controllers
             }
             return _response;
         }
+
         [HttpPost]
+        [Authorize(Roles = "BusinessEmployer")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -106,8 +108,11 @@ namespace finjob_backend.Controllers
                     ModelState.AddModelError("CustomError", "Company ID is Invalid!");
                     return BadRequest();
                 }
-                var locations = await _dbLocation.GetAllAsync(x => createDTO.LocationIds.Contains(x.Id));
-                var positions = await _dbPosition.GetAllAsync(x => createDTO.PositionIds.Contains(x.Id));
+                var locationsResult = await _dbLocation.GetAllAsync(x => createDTO.LocationIds.Contains(x.Id));
+                var positionsResult = await _dbPosition.GetAllAsync(x => createDTO.PositionIds.Contains(x.Id));
+
+                var locations = locationsResult.Data;
+                var positions = positionsResult.Data;
 
                 Job job = _mapper.Map<Job>(createDTO);
 
@@ -192,13 +197,13 @@ namespace finjob_backend.Controllers
 
                 foreach (var location in existingLocations)
                 {
-                    if (!newLocations.Any(x => x.Id == location.Id))
+                    if (!newLocations.Data.Any(x => x.Id == location.Id))
                     {
                         existingJob.Locations.Remove(location);
                     }
                 }
 
-                foreach (var location in newLocations)
+                foreach (var location in newLocations.Data)
                 {
                     if (!existingLocations.Any(x => x.Id == location.Id))
                     {
@@ -211,13 +216,13 @@ namespace finjob_backend.Controllers
 
                 foreach (var position in existingPositions)
                 {
-                    if (!newPositions.Any(x => x.Id == position.Id))
+                    if (!newPositions.Data.Any(x => x.Id == position.Id))
                     {
                         existingJob.Positions.Remove(position);
                     }
                 }
 
-                foreach (var position in newPositions)
+                foreach (var position in newPositions.Data)
                 {
                     if (!existingPositions.Any(x => x.Id == position.Id))
                     {

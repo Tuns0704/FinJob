@@ -33,10 +33,10 @@ namespace finjob_backend.Controllers
         {
             try
             {
-                IEnumerable<Company> companyList = await _dbCompany.GetAllAsync(filter: null, pageSize: pageSize, pageNumber: pageNumber, includes: x => x.Locations);
-                Pagination pagination = new() { pageNumber = pageNumber, pageSize = pageSize };
+                PaginationResult<Company> paginationResult = await _dbCompany.GetAllAsync(filter: null, pageSize: pageSize, pageNumber: pageNumber, includes: x => x.Locations);
+                var pagination = new Pagination { PageSize = pageSize, PageNumber = pageNumber, TotalCount = paginationResult.TotalCount, TotalPages = paginationResult.TotalPages };
                 Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
-                _response.Result = _mapper.Map<List<CompanyDTO>>(companyList);
+                _response.Result = _mapper.Map<List<CompanyDTO>>(paginationResult.Data);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
             }
@@ -44,8 +44,8 @@ namespace finjob_backend.Controllers
             {
                 _response.IsSuccess = false;
                 _response.ErrorMessages = new List<string>() { ex.ToString() };
+                return _response;
             }
-            return _response;
         }
 
         [HttpGet("{id:int}", Name = "GetCompany")]
@@ -102,7 +102,7 @@ namespace finjob_backend.Controllers
 
                 var locations = await _dbLocation.GetAllAsync(x => createDTO.LocationIds.Contains(x.Id));
                 Company company = _mapper.Map<Company>(createDTO);
-                company.Locations = locations;
+                company.Locations = locations.Data;
 
                 await _dbCompany.CreateAsync(company);
 
@@ -155,7 +155,7 @@ namespace finjob_backend.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<APIResponse>> UpdateCompany(int id, [FromBody] CompanyUpdateDTO updateDTO)
+        public async Task<ActionResult<APIResponse>> UpdateCompany(int id, [FromBody] CompanyUpdateDTO updateDTO, int pageSize = 10, int pageNumber = 1)
         {
             try
             {
@@ -171,7 +171,11 @@ namespace finjob_backend.Controllers
                 }
 
                 _mapper.Map<CompanyUpdateDTO, Company>(updateDTO, company);
-                var newLocations = await _dbLocation.GetAllAsync(x => updateDTO.LocationIds.Contains(x.Id));
+
+                var locationIds = updateDTO.LocationIds;
+                var newLocationPaginationResult = await _dbLocation.GetAllAsync(filter: x => locationIds.Contains(x.Id), pageSize: pageSize, pageNumber: pageNumber);
+                var newLocations = newLocationPaginationResult.Data;
+
                 company.Locations = newLocations;
 
                 await _dbCompany.UpdateAsync(company);

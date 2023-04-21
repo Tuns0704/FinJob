@@ -4,6 +4,7 @@ using finjob_backend.Models.DTO;
 using finjob_backend.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Text.Json;
 
 namespace finjob_backend.Controllers
 {
@@ -28,8 +29,10 @@ namespace finjob_backend.Controllers
         {
             try
             {
-                IEnumerable<Position> positionList = await _dbPosition.GetAllAsync(pageSize: pageSize, pageNumber: pageNumber);
-                _response.Result = _mapper.Map<List<PositionDTO>>(positionList);
+                var paginationResult = await _dbPosition.GetAllAsync(pageSize: pageSize, pageNumber: pageNumber);
+                var pagination = new Pagination { PageSize = pageSize, PageNumber = pageNumber, TotalCount = paginationResult.TotalCount, TotalPages = paginationResult.TotalPages };
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
+                _response.Result = _mapper.Map<List<LocationDTO>>(paginationResult.Data);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
             }
