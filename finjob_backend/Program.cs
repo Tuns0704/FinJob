@@ -23,6 +23,7 @@ builder.Services.AddCors(options =>
     builder => builder
         .AllowAnyMethod()
         .AllowAnyHeader()
+        .WithExposedHeaders("X-Pagination")
         .WithOrigins("https://localhost:3000")
         .AllowCredentials());
 });

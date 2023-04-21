@@ -45,6 +45,7 @@ namespace finjob_backend
             CreateMap<TopSkill, TopSkillUpdateDTO>().ReverseMap();
 
             CreateMap<ApplicationUser, UserDTO>().ReverseMap();
+            CreateMap<ApplicationUser, UserCreateDTO>().ReverseMap();
         }
     }
 }
