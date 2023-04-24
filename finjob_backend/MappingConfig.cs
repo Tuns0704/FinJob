@@ -9,7 +9,7 @@ namespace finjob_backend
         public MappingConfig()
         {
             CreateMap<Company, CompanyDTO>()
-                .ForMember(x => x.LocationIds, opt => opt.MapFrom(s => s.Locations.Select(l => l.Id).ToList()))
+                .ForMember(x => x.Locations, opt => opt.MapFrom(s => s.Locations.Select(l => l.Name).ToList()))
                 .ReverseMap();
             CreateMap<Company, CompanyCreateDTO>()
                 .ForMember(x => x.LocationIds, opt => opt.MapFrom(s => s.Locations.Select(l => l.Id).ToList()))
@@ -21,6 +21,7 @@ namespace finjob_backend
             CreateMap<Job, JobDTO>()
                 .ForMember(x => x.Locations, opt => opt.MapFrom(s => s.Locations.Select(l => l.Name).ToList()))
                 .ForMember(x => x.Positions, opt => opt.MapFrom(s => s.Positions.Select(l => l.Name).ToList()))
+                .ForMember(x => x.PositionIds, opt => opt.MapFrom(s => s.Positions.Select(l => l.Id).ToList()))
                 .ReverseMap();
             CreateMap<Job, JobCreateDTO>()
                 .ForMember(x => x.LocationIds, opt => opt.MapFrom(s => s.Locations.Select(l => l.Id).ToList()))
@@ -45,7 +46,18 @@ namespace finjob_backend
             CreateMap<TopSkill, TopSkillUpdateDTO>().ReverseMap();
 
             CreateMap<ApplicationUser, UserDTO>().ReverseMap();
+            CreateMap<ApplicationUser, UserResponseDTO>().ReverseMap();
             CreateMap<ApplicationUser, UserCreateDTO>().ReverseMap();
+            CreateMap<ApplicationUser, UserUpdateDTO>().ReverseMap();
+
+            CreateMap<UserApplyJob, UserApplyDTO>()
+                .ForMember(x => x.Position, opt => opt.MapFrom(s => s.Position.Name))
+                .ForMember(x => x.Job, opt => opt.MapFrom(s => s.Job.Title))
+                .ReverseMap();
+            CreateMap<UserApplyJob, UserApplyCreateDTO>().ReverseMap();
+
+            CreateMap<Conversation, ConversationDTO>().ReverseMap();
+            CreateMap<Message, MessageDTO>().ReverseMap();
         }
     }
 }

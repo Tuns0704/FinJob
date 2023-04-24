@@ -16,6 +16,9 @@ namespace finjob_backend.Data
         public DbSet<Position> Positions { get; set; }
         public DbSet<TopSkill> TopSkills { get; set; }
         public DbSet<WorkExprience> WorkExpriences { get; set; }
+        public DbSet<UserApplyJob> UserApplyJobs { get; set; }
+        public DbSet<Conversation> Conversations { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -42,7 +45,5 @@ namespace finjob_backend.Data
                 .HasMany<WorkExprience>(u => u.WorkExpriences)
                 .WithOne(u => u.User);
         }
-
-        public DbSet<finjob_backend.Models.DTO.UserDTO>? UserDTO { get; set; }
     }
 }
