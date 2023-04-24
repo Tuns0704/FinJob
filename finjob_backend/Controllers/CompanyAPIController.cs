@@ -33,9 +33,22 @@ namespace finjob_backend.Controllers
         {
             try
             {
-                PaginationResult<Company> paginationResult = await _dbCompany.GetAllAsync(filter: null, pageSize: pageSize, pageNumber: pageNumber, includes: x => x.Locations);
-                var pagination = new Pagination { PageSize = pageSize, PageNumber = pageNumber, TotalCount = paginationResult.TotalCount, TotalPages = paginationResult.TotalPages };
+                PaginationResult<Company> paginationResult = await _dbCompany.GetAllAsync(
+                    filter: null,
+                    pageSize: pageSize,
+                    pageNumber: pageNumber,
+                    includes: x => x.Locations
+                    );
+                var pagination = new Pagination
+                {
+                    PageSize = pageSize,
+                    PageNumber = pageNumber,
+                    TotalCount = paginationResult.TotalCount,
+                    TotalPages = paginationResult.TotalPages
+                };
+
                 Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
+
                 _response.Result = _mapper.Map<List<CompanyDTO>>(paginationResult.Data);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);

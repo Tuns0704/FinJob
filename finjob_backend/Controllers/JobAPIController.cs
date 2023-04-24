@@ -37,14 +37,27 @@ namespace finjob_backend.Controllers
         {
             try
             {
-                var paginationResult = await _dbJob.GetAllAsync(filter: null, pageSize: pageSize, pageNumber: pageNumber, includes: new Expression<Func<Job, object>>[]
-                    {
-                            x => x.Positions,
-                            x => x.Locations,
-                            x => x.Company
-                    });
-                var pagination = new Pagination { PageSize = pageSize, PageNumber = pageNumber, TotalCount = paginationResult.TotalCount, TotalPages = paginationResult.TotalPages };
+                var paginationResult = await _dbJob.GetAllAsync(
+                filter: null,
+                pageSize: pageSize,
+                pageNumber: pageNumber,
+                includes: new Expression<Func<Job, object>>[]
+                {
+                        x => x.Positions,
+                        x => x.Locations,
+                        x => x.Company
+                });
+
+                var pagination = new Pagination
+                {
+                    PageSize = pageSize,
+                    PageNumber = pageNumber,
+                    TotalCount = paginationResult.TotalCount,
+                    TotalPages = paginationResult.TotalPages
+                };
+
                 Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
+
                 var jobList = _mapper.Map<List<JobDTO>>(paginationResult.Data);
                 var response = new APIResponse { IsSuccess = true, Result = jobList, StatusCode = HttpStatusCode.OK };
                 return Ok(response);
@@ -68,12 +81,14 @@ namespace finjob_backend.Controllers
                 {
                     return BadRequest(_response.IsSuccess = false);
                 }
-                var job = await _dbJob.GetAsync(filter: x => x.Id == id, includes: new Expression<Func<Job, object>>[]
-                                  {
-                                      x => x.Positions,
-                                      x => x.Locations,
-                                      x => x.Company
-                                  });
+                var job = await _dbJob.GetAsync(
+                filter: x => x.Id == id,
+                includes: new Expression<Func<Job, object>>[]
+                {
+                    x => x.Positions,
+                    x => x.Locations,
+                    x => x.Company
+                });
                 if (job == null)
                 {
                     return NotFound(_response.IsSuccess = false);

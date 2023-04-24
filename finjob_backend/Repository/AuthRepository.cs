@@ -17,7 +17,7 @@ namespace finjob_backend.Repository
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
-        private string secretKey;
+        private readonly string secretKey;
 
         public AuthRepository(ApplicationDbContext db, IConfiguration configuration, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
         {
@@ -84,10 +84,11 @@ namespace finjob_backend.Repository
             ApplicationUser user = new()
             {
                 UserName = registerationRequestDTO.UserName,
-                Email = registerationRequestDTO.UserName,
-                NormalizedEmail = registerationRequestDTO.UserName.ToUpper(),
+                Email = registerationRequestDTO.Email,
+                NormalizedEmail = registerationRequestDTO.Email.ToUpper(),
                 Name = registerationRequestDTO.Name,
                 CompanyId = registerationRequestDTO.CompanyId,
+                Avatar = registerationRequestDTO.Avatar,
             };
             try
             {

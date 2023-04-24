@@ -6,6 +6,7 @@ namespace finjob_backend.Repository
 {
     public class TopSkillRepository : Repository<TopSkill>, ITopSkillRepository
     {
+
         private readonly ApplicationDbContext _db;
 
         public TopSkillRepository(ApplicationDbContext db) : base(db)

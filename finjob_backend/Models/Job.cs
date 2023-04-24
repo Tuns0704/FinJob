@@ -8,7 +8,8 @@ namespace finjob_backend.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [ForeignKey("Company")]
+        public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
         public int CompanyID { get; set; }
         public Company Company { get; set; }
         public string Title { get; set; }
@@ -18,6 +19,7 @@ namespace finjob_backend.Models
         public string Salary { get; set; }
         public ICollection<Location> Locations { get; set; }
         public ICollection<Position> Positions { get; set; }
+        public ICollection<UserApplyJob> UserApplyJobs { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
     }
