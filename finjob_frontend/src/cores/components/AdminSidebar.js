@@ -14,20 +14,20 @@ const AdminSidebar = () => {
 	return (
 		<aside
 			id="logo-sidebar"
-			className="fixed top-10 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
+			className="fixed left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
 			aria-label="Sidebar"
 		>
-			<div className="h-full px-3 pb-4 overflow-y-auto bg-white">
-				<Link to="/" class="flex items-center pl-2.5 mb-5">
-					<img src={logo} class="w-28" alt="Flowbite Logo" />
-					<span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
-						Flowbite
+			<div className="h-full pt-10 px-3 pb-4 overflow-y-auto bg-white">
+				<Link to="/" className="flex items-center pl-2.5 mb-5">
+					<img src={logo} className="w-28" alt="FinJob Logo" />
+					<span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
+						FinJob
 					</span>
 				</Link>
 				<ul className="space-y-2 font-medium">
 					<li>
 						<Link
-							href="#"
+							to="/"
 							className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100"
 						>
 							<svg

@@ -2,12 +2,12 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { authContext } from "../../cores/context/auth";
-import { getAllJobs, deleteJob } from "../../services/job.service";
 
-const AdminManageJob = () => {
+const AdminManageUser = () => {
 	const [data, setData] = useState([]);
 	const [totalPages, setTotalPages] = useState(1);
 	const [currentPage, setCurentPage] = useState(1);
+	const [pageSize, setPageSize] = useState(10);
 
 	const {
 		state: { user, token },
@@ -15,43 +15,44 @@ const AdminManageJob = () => {
 
 	const navigate = useNavigate();
 
-	const getData = useCallback(async () => {
-		try {
-			const response = await getAllJobs(currentPage, "", token);
-			setData(response.data.result);
-			setTotalPages(response.data.totalPages);
-		} catch (error) {
-			console.log(error);
-		}
-	}, [currentPage, token]);
+	// const getData = useCallback(async () => {
+	//   try {
+	//     const response = await (currentPage, "", token);
+	//     setData(response.data.result);
+	//     console.log(response.data.result);
+	//     setTotalPages(response.data.totalPages);
+	//   } catch (error) {
+	//     console.log(error);
+	//   }
+	// }, [currentPage, token]);
 
-	const removeJob = async (id) => {
-		const confirmed = window.confirm(
-			"Are you sure you want to delete this job?"
-		);
-		if (!confirmed) {
-			return;
-		}
-		try {
-			const response = await deleteJob(id);
-			if (response.statusCode === 204) {
-				toast.success("Delete job successfully!");
-				getData();
-			}
-		} catch (error) {
-			console.log(error);
-		}
-	};
+	// const removeUser = async (id) => {
+	// 	const confirmed = window.confirm(
+	// 		"Are you sure you want to delete this job?"
+	// 	);
+	// 	if (!confirmed) {
+	// 		return;
+	// 	}
+	// 	try {
+	// 		const response = await deleteJob(id);
+	// 		if (response.statusCode === 204) {
+	// 			toast.success("Delete job successfully!");
+	// 			getData();
+	// 		}
+	// 	} catch (error) {
+	// 		console.log(error);
+	// 	}
+	// };
 
-	useEffect(() => {
-		getData();
-	}, [getData]);
+	// useEffect(() => {
+	// 	getData();
+	// }, [getData]);
 
 	return (
 		<div className="container px-4 sm:px-8 min-h-screen">
 			<div className="py-8">
 				<div>
-					<h2 className="text-2xl font-semibold leading-tight">Manage Jobs</h2>
+					<h2 className="text-2xl font-semibold leading-tight">Manage Users</h2>
 				</div>
 				<div className="my-2 flex sm:flex-row flex-col">
 					<div className="flex flex-row mb-1 sm:mb-0">
@@ -132,7 +133,7 @@ const AdminManageJob = () => {
 								</tr>
 							</thead>
 							<tbody>
-								{data?.map((item) => (
+								{/* {data?.map((item) => (
 									<tr key={item.id}>
 										<td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
 											<div className="flex items-center">
@@ -219,7 +220,7 @@ const AdminManageJob = () => {
 											</button>
 										</td>
 									</tr>
-								))}
+								))} */}
 							</tbody>
 						</table>
 						<div className="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between          ">
@@ -241,4 +242,5 @@ const AdminManageJob = () => {
 		</div>
 	);
 };
-export default AdminManageJob;
+
+export default AdminManageUser;

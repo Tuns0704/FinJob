@@ -2,8 +2,8 @@ import { useCallback, useState, useEffect, useContext } from "react";
 import { SidebarProfile } from "../../cores/components";
 import { getAllJobs } from "../../services/job.service";
 import { authContext } from "../../cores/context/auth";
-import CardItem from "./CardItem";
-import CreateJobModal from "./CreateJobModal";
+import CardItem from "./card-item";
+import CreateJobModal from "./create-job-modal";
 
 const HomePage = () => {
 	const [data, setData] = useState([]);
@@ -19,7 +19,6 @@ const HomePage = () => {
 		try {
 			const response = await getAllJobs(currentPage);
 			setData(response.data.result);
-			console.log(response.headers["x-pagination"]);
 		} catch (error) {
 			console.log(error);
 		}

@@ -16,11 +16,10 @@ const validationSchema = yup.object().shape({
 	role: yup
 		.string("Employee" | "BusinessEmployer")
 		.required("You Must Choose an Account Type"),
-	name: yup
-		.string()
-		// .email("Email is invalid")
-		.required("Name must be filled"),
+	name: yup.string().required("Name must be filled"),
 	userName: yup.string().required("Username is required"),
+	email: yup.string().email("Email is valid").required("Email is required"),
+	avatar: yup.string().required("Avatar is required"),
 	password: yup
 		.string()
 		.required("Please enter a password")
@@ -57,8 +56,10 @@ export default function RegisterPage() {
 			role: "",
 			name: "",
 			userName: "",
+			email: "",
 			password: "",
 			confirmPassword: "",
+			avatar: "",
 			terms: false,
 			company: {
 				name: "",
@@ -94,7 +95,6 @@ export default function RegisterPage() {
 
 	const handleChange = (selectedOptions) => {
 		setSelectedLocations(selectedOptions);
-		console.log(selectedLocations);
 	};
 
 	const onSubmit = async (body) => {
@@ -118,7 +118,9 @@ export default function RegisterPage() {
 						role: body.role,
 						name: body.name,
 						userName: body.userName,
+						email: body.email,
 						password: body.password,
+						avatar: body.avatar,
 						companyId: companyResponse.result.id,
 					};
 					({ data: response } = await registerAccount(user));
@@ -188,6 +190,42 @@ export default function RegisterPage() {
 								<ErrorMessage
 									errors={errors}
 									name="name"
+									render={({ message }) => (
+										<p className="text-primary text-sm">{message}</p>
+									)}
+								/>
+							</div>
+							<div>
+								<label className="block mb-2 text-sm font-medium text-gray-90">
+									Email
+									<input
+										type="text"
+										className="bg-light border-lightOrange text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+										placeholder="Nguyen Van A"
+										{...register("email")}
+									/>
+								</label>
+								<ErrorMessage
+									errors={errors}
+									name="email"
+									render={({ message }) => (
+										<p className="text-primary text-sm">{message}</p>
+									)}
+								/>
+							</div>
+							<div>
+								<label className="block mb-2 text-sm font-medium text-gray-90">
+									Image URL
+									<input
+										type="text"
+										className="bg-light border-lightOrange text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+										placeholder="Nguyen Van A"
+										{...register("avatar")}
+									/>
+								</label>
+								<ErrorMessage
+									errors={errors}
+									name="avatar"
 									render={({ message }) => (
 										<p className="text-primary text-sm">{message}</p>
 									)}

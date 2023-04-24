@@ -1,59 +1,45 @@
-import { React, useState, useEffect, useCallback } from "react";
-import { getCompany } from "../../services/company.service";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 
-export default function CardItem(item) {
-	const [company, setCompany] = useState([]);
-	const navigate = useNavigate();
-
-	const getCompanyById = useCallback(async () => {
-		try {
-			const response = await getCompany(item.item.companyID);
-			if (response.status === 200) {
-				setCompany(response.data.result);
-			}
-		} catch (error) {
-			console.log(error);
-		}
-	}, [item.item.companyID]);
-
-	useEffect(() => {
-		getCompanyById();
-	}, [getCompanyById]);
-
+const CardItem = () => {
 	return (
 		<div className="rounded-lg bg-white px-10 py-5 mb-5">
 			<div className="flex justify-between mb-6">
 				<div className="flex gap-2">
 					<div className="w-16 h-16 p-4 flex justify-center bg-gray-100 rounded-lg">
-						<img src={company.imageURL} alt="" />
+						<img
+							src="https://th.bing.com/th/id/OIP.cd9qgShjAPYctAp_c76EwAAAAA?pid=ImgDet&rs=1"
+							alt=""
+						/>
 					</div>
 					<div className="flex flex-col">
 						<div
 							className="text-2xl font-medium hover:cursor-pointer"
-							onClick={() => navigate(`detail/${item.item.id}`)}
+							// onClick={() => navigate(`detail/${job.id}`)}
 						>
-							{item.item.title}
+							Intert React
 						</div>
-						<div className="text-gray-400">{company.name}</div>
+						<div className="text-gray-400">DataHouse</div>
 					</div>
 				</div>
-				<div>Header Button Card</div>
+				{/* <div>Header Button Card</div> */}
 			</div>
 			<div>
 				<div
 					className="text-justify mb-5 hover:cursor-pointer"
-					onClick={() => navigate(`detail/${item.item.id}`)}
+					// onClick={() => navigate(`detail/${job.id}`)}
 				>
-					{item.item.description}
+					Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eius laborum
+					molestiae voluptatem cumque labore id, reprehenderit animi minus
+					officiis quaerat dolorum exercitationem sapiente quos qui doloribus
+					veritatis perferendis accusamus voluptate.
 				</div>
 				<div className="flex gap-2 mb-5">
-					{item.item.locations.map((location) => (
+					{/* {item.locations.map((location) => (
 						<div key={location} className="px-5 py-3 bg-gray-100 rounded-lg">
 							{location}
 						</div>
-					))}
+					))} */}
+					<div className="px-5 py-3 bg-gray-100 rounded-lg">Ha Noi</div>
 				</div>
 			</div>
 			<div className="flex justify-between">
@@ -75,9 +61,7 @@ export default function CardItem(item) {
 								/>
 							</svg>
 						</div>
-						<div className="flex self-center text-secondary">
-							{item.item.salary}
-						</div>
+						<div className="flex self-center text-secondary">$20/hr</div>
 					</div>
 					<div className="flex gap-1 w-5/6">
 						<div className="sm:flex">
@@ -102,13 +86,11 @@ export default function CardItem(item) {
 					</div>
 				</div>
 				<div className="flex items-center">
-					<div className="py-3 rounded-lg bg-primary text-white text-bold">
-						<div className="px-5 w-full flex justify-center self-center">
-							Apply Now
-						</div>
-					</div>
+					<div className="bg-primary rounded-lg py-3 px-5 w-full flex justify-center self-center text-white text-bold"></div>
 				</div>
 			</div>
 		</div>
 	);
-}
+};
+
+export default CardItem;

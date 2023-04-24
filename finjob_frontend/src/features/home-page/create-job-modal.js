@@ -95,6 +95,7 @@ const CreateJobModal = ({ isOpen, onClose }) => {
 	const onSubmit = async (body) => {
 		try {
 			const job = {
+				userId: user.id,
 				title: body.title,
 				description: body.description,
 				positionIds: selectedPositions.map((position) =>
@@ -188,7 +189,7 @@ const CreateJobModal = ({ isOpen, onClose }) => {
 						Position
 						<Select
 							className="border-none placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-							{...register("locationIds")}
+							{...register("selectedPositions")}
 							isMulti
 							options={positionsFields}
 							value={selectedPositions}
@@ -197,7 +198,7 @@ const CreateJobModal = ({ isOpen, onClose }) => {
 					</label>
 					<ErrorMessage
 						errors={errors}
-						name="locationIds"
+						name="selectedPositions"
 						render={({ message }) => (
 							<p className="text-primary text-sm">{message}</p>
 						)}
@@ -270,6 +271,7 @@ const CreateJobModal = ({ isOpen, onClose }) => {
 					/>
 					<div className="flex justify-center mt-10">
 						<button
+							disabled={!isValid}
 							type="submit"
 							className="bg-primary w-full text-white font-bold text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
 						>
