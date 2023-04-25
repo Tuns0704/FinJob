@@ -2,7 +2,7 @@ import axios from "axios";
 import { config } from "./config";
 
 export const createConversation = (body, token) =>
-	axios.post(`${process.env.REACT_APP_API}/Conversation`, config(token));
+	axios.post(`${process.env.REACT_APP_API}/Conversation`, body, config(token));
 
 export const getConversationByUserId = (userId, token) =>
 	axios.get(

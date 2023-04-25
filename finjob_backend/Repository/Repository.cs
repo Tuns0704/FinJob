@@ -48,7 +48,7 @@ namespace finjob_backend.Repository
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<PaginationResult<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, int pageSize = 0, int pageNumber = 1, params Expression<Func<T, object>>[]? includes)
+        public async Task<PaginationResult<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? search = null, int pageSize = 0, int pageNumber = 1, params Expression<Func<T, object>>[]? includes)
         {
             IQueryable<T> query = dbSet;
 
@@ -56,6 +56,12 @@ namespace finjob_backend.Repository
             {
                 query = query.Where(filter);
             }
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(x => x.ToString().Contains(search));
+            }
+
             if (includes != null)
             {
                 foreach (var include in includes)

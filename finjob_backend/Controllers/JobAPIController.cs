@@ -33,12 +33,13 @@ namespace finjob_backend.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<APIResponse>> GetJobList(int pageSize = 10, int pageNumber = 1)
+        public async Task<ActionResult<APIResponse>> GetJobList(int pageSize = 10, int pageNumber = 1, string? search = null)
         {
             try
             {
                 var paginationResult = await _dbJob.GetAllAsync(
                 filter: null,
+                search: search,
                 pageSize: pageSize,
                 pageNumber: pageNumber,
                 includes: new Expression<Func<Job, object>>[]

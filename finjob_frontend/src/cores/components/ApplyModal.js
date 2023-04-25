@@ -1,12 +1,13 @@
 import { ErrorMessage } from "@hookform/error-message";
 import Modal from "react-modal";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useContext, useEffect, useState, useCallback } from "react";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { authContext } from "../../cores/context/auth";
 import { applyJob } from "../../services/apply.service";
+import { createConversation } from "../../services/chat.service";
 
 const jobSchema = yup.object().shape({
 	email: yup.string().email("Unvalid Email").required("Email is required"),
@@ -52,6 +53,21 @@ const ApplyModal = ({ isOpen, onClose, data, reload }) => {
 			if (response.status === 201) {
 				toast.success("Apply success!!!");
 				onClose();
+				const conversation = {
+					senderId: user.id,
+					receiverId: data.userId,
+				};
+				const conversationResponse = await createConversation(
+					conversation,
+					token
+				);
+				if (conversationResponse.status === 201) {
+					toast.success(
+						"You have connect with Employer! You can direct in the messenger"
+					);
+				} else {
+					toast.error("You already have the convertion with this employer!");
+				}
 				return;
 			}
 			toast.error("You have already apply for this job!!!");
