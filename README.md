@@ -9,3 +9,6 @@ Tech used:
 <li>ReactJS</li>
 <li>Tailwind CSS</li>
 </ul>
+
+System architecture:
+![Picture1](https://github.com/Tuns0704/FinJob/assets/75670074/39296519-a8ed-4b24-961b-fd7e17919a3f)
